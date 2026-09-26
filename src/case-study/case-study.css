@@ -1,0 +1,635 @@
+/* ── Case study system ─────────────────────────────────────────────────────────
+   Shared layout, type scale and card styles for long-form case studies.
+   Per-project color is set through the --cs-accent-* / --cs-tint-* variables
+   (see `theme` on <CaseStudyPage>). Values mirror the Figma case-study frames:
+   1260px frame, 940px content column, 100px section rhythm. */
+
+/* While a case study is mounted: light canvas and standard (overlay-capable) scrollbar.
+   The global 4px ::-webkit-scrollbar forces a classic scrollbar lane whose transparent
+   track exposes the dark body canvas — the "black line" on the right. */
+html.cs-root {
+  background: #fff;
+  scrollbar-color: rgba(11, 11, 13, 0.28) transparent;
+}
+
+.cs-page {
+  --cs-text: #0b0b0d;
+  --cs-text-primary: #4a4a4a;
+  --cs-text-secondary: #6c6c6c;
+  --cs-text-ondark: #e5e5e5;
+  --cs-border: #d2d8e1;
+  --cs-line: #56575b;
+  --cs-divider: rgba(0, 0, 0, 0.1);
+  --cs-content: 940px;
+  --cs-gutter: clamp(20px, 5vw, 40px);
+  --cs-nav-h: 64px;
+  --cs-shift: 0px; /* desktop-with-side-nav: how far the content column moves right */
+
+  /* Accent defaults (overridden per project) */
+  --cs-accent-from: rgb(210, 23, 114);
+  --cs-accent-to: rgb(235, 104, 56);
+  --cs-tint-from: rgba(255, 86, 153, 0.08);
+  --cs-tint-to: rgba(212, 120, 176, 0.05);
+  --cs-glow: rgba(241, 215, 239, 1);
+  --cs-glow-base: rgba(251, 250, 250, 1);
+  --cs-hero-top: #ffe5fa;
+
+  background: #fff;
+  color: var(--cs-text);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+.cs-page img { display: block; max-width: none; }
+
+/* ── Type scale (Figma text styles) ── */
+.cs-title { font-size: 40px; line-height: 48px; letter-spacing: -1px; font-weight: 400; color: var(--cs-text); }
+.cs-subtitle { font-size: 24px; line-height: 32px; font-weight: 600; color: var(--cs-text-primary); }
+.cs-body { font-size: 16px; line-height: 26px; font-weight: 400; color: var(--cs-text-primary); }
+.cs-body-muted { font-size: 16px; line-height: 26px; font-weight: 400; color: var(--cs-text-secondary); }
+.cs-body p + p { margin-top: 8px; }
+
+.cs-gradient-text {
+  background-image: linear-gradient(var(--cs-angle, 125deg), var(--cs-accent-from) 5.17%, var(--cs-accent-to) 94.83%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── Hero ── */
+.cs-hero {
+  background: linear-gradient(180deg, var(--cs-hero-top) 4.327%, #fbfbfb 71.154%, #fff 99.038%);
+  padding: calc(var(--cs-nav-h) + 80px) var(--cs-gutter) 80px;
+}
+.cs-hero-inner {
+  position: relative;
+  max-width: var(--cs-content);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.cs-hero-art { height: auto; }
+.cs-hero-eyebrow { font-size: 24px; line-height: normal; color: var(--cs-text-secondary); }
+.cs-hero-title {
+  font-size: 48px;
+  line-height: 55.2px;
+  letter-spacing: -0.32px;
+  font-weight: 400;
+  color: var(--cs-text);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 8px;
+}
+
+/* ── Sections ── */
+.cs-section { padding: 100px var(--cs-gutter); }
+.cs-container {
+  max-width: var(--cs-content);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cs-gap, 40px);
+}
+.cs-divider { height: 1px; width: 100%; background: var(--cs-divider); flex-shrink: 0; }
+
+/* ── Split content: two equal columns ── */
+.cs-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 40px;
+  row-gap: 24px;
+}
+.cs-split > * { min-width: 0; }
+.cs-stack { display: flex; flex-direction: column; }
+
+/* ── Meta bar ── */
+.cs-meta { display: flex; gap: 24px; }
+.cs-meta-item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0 16px 24px;
+  border-left: 1px solid var(--cs-line);
+}
+
+/* ── Cards ── */
+.cs-card { border-radius: 32px; padding: 40px; }
+.cs-card-outline { border: 1px solid var(--cs-border); }
+.cs-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.cs-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+.cs-stat { display: flex; flex-direction: column; gap: 4px; }
+.cs-stat-value { font-size: 24px; line-height: 32px; font-weight: 600; }
+
+.cs-insight {
+  background: #f3f3f3;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 440px;
+}
+.cs-insight-body { flex: 1 0 auto; }
+.cs-insight-rule { height: 1px; background: var(--cs-line); }
+
+.cs-number { font-size: 24px; font-weight: 700; letter-spacing: -0.6px; line-height: normal; }
+
+.cs-highlight {
+  display: flex;
+  gap: 40px;
+  padding: 40px;
+  border-radius: 32px;
+  background-image: linear-gradient(163.64deg, var(--cs-tint-from) 0%, var(--cs-tint-to) 100%);
+}
+.cs-highlight > * { flex: 1 1 0; min-width: 0; }
+.cs-highlight-stat {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.cs-bullets { display: flex; flex-direction: column; gap: 16px; }
+.cs-bullets li { display: flex; align-items: flex-start; gap: 12px; list-style: none; }
+.cs-bullets li::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 3px;
+  margin-top: 10px; /* centered on the first 26px line */
+  background: var(--cs-text);
+  flex-shrink: 0;
+}
+
+/* ── Media ── */
+.cs-media { position: relative; overflow: hidden; }
+.cs-media > img { position: absolute; }
+
+.cs-devices {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.cs-device { flex: 0 0 auto; }
+.cs-device img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Before → After ── */
+.cs-ba { display: flex; align-items: stretch; gap: 16px; }
+.cs-ba-card {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 40px;
+  border-radius: 32px;
+}
+.cs-ba-before { border: 1px solid var(--cs-border); }
+.cs-ba-after { background-image: linear-gradient(130deg, var(--cs-tint-from) 0%, var(--cs-tint-to) 100%); }
+.cs-ba-media { flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cs-ba-text { width: 100%; display: flex; flex-direction: column; }
+.cs-ba-label { font-size: 24px; line-height: normal; font-weight: 400; color: var(--cs-text-primary); }
+.cs-ba-arrow { flex: 0 0 26px; align-self: center; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+.cs-ba-arrow img { width: 37.06px; height: 36.71px; }
+
+/* ── Takeaway ── */
+.cs-takeaway {
+  position: relative;
+  overflow: hidden;
+  background: #0a0a0c;
+  border-radius: 24px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--cs-text-ondark);
+}
+.cs-takeaway > p { position: relative; z-index: 1; }
+.cs-takeaway-label { font-size: 24px; line-height: normal; }
+.cs-takeaway-text { font-size: 20px; line-height: normal; max-width: 370px; }
+/* Anchored to the card's bottom edge (Figma: 810×606 image, 180px left bleed, 68px below the card) */
+.cs-takeaway-media { position: absolute; left: -40%; width: 180%; bottom: -10.9%; }
+.cs-takeaway-media img {
+  width: 100%;
+  height: auto;
+  /* Blend the photo's top edge into the card when the card grows taller than in Figma */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 12%);
+}
+
+/* ── Chrome: back link, back-to-top, footer ── */
+/* Pill link in the portfolio's outline-button language (HoverFillLink, dark variant) */
+.cs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px 0 12px;
+  border-radius: 100px;
+  border: 0.556px solid var(--cs-text);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--cs-text);
+  text-decoration: none;
+  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+}
+.cs-back:hover, .cs-back:focus-visible { background: var(--cs-text); color: #f2f2f4; }
+.cs-back svg { transition: transform 0.2s ease; }
+.cs-back:hover svg { transform: translateX(-3px); }
+
+/* Glass surface shared by the Work pill and Back to top (same values as the navbar's glass);
+   tone follows the surface underneath (useGlassTone) */
+.cs-glass {
+  --glass: rgba(10, 10, 13, 0.72);
+  --glass-hover: rgba(10, 10, 13, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-ink: #f2f2f4;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.556px solid var(--glass-border);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 16px rgba(10, 10, 13, 0.08);
+  color: var(--glass-ink);
+  cursor: pointer;
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+.cs-glass:hover { background: var(--glass-hover); }
+.cs-glass:focus-visible { outline: 1.5px solid var(--cs-text); outline-offset: 3px; }
+.cs-glass[data-tone='light'] {
+  --glass: rgba(242, 242, 244, 0.78);
+  --glass-hover: rgba(242, 242, 244, 0.95);
+  --glass-border: rgba(11, 11, 13, 0.08); /* same as the navbar's light glass */
+  --glass-ink: #0b0b0d;
+}
+/* Shared icon language: 16px line icons at the navbar's stroke weight */
+.cs-glass svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* "← Work" pill (side nav on desktop, floating on smaller screens) */
+.cs-work-pill {
+  display: inline-flex;
+  gap: 5px;
+  padding: 0 14px 0 11px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+/* Floating placement: fixed, appears after scrolling */
+.cs-float {
+  position: fixed;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 40;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+.cs-float[data-visible='true'] { opacity: 1; transform: none; pointer-events: auto; }
+.cs-to-top { right: max(24px, env(safe-area-inset-right)); width: 40px; border-radius: 50%; }
+.cs-float-back { left: max(24px, env(safe-area-inset-left)); }
+
+/* ── Side navigation (left outer margin) ── */
+.cs-main { position: relative; }
+.cs-sidenav-rail { display: none; }
+/* Quiet secondary layer: small type, soft neutrals, navbar-style dot for the active item */
+.cs-back-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--cs-text-primary);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+.cs-back-text svg { width: 14px; height: 14px; transition: transform 0.2s ease; }
+.cs-back-text:hover { color: var(--cs-text); }
+.cs-back-text:hover svg { transform: translateX(-3px); }
+.cs-back-text:focus-visible, .cs-sidenav-list a:focus-visible { outline: 1.5px solid var(--cs-text); outline-offset: 3px; }
+
+.cs-sidenav-sections {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transition: opacity 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), translate 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s;
+}
+.cs-sidenav-sections[data-visible='false'] {
+  opacity: 0;
+  translate: 0 8px;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0.3s; /* hide from AT after fading */
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-sidenav-sections, .cs-sidenav-sections[data-visible='false'] { transition: none; translate: none; }
+}
+.cs-sidenav-label {
+  margin: 28px 0 6px;
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a1a1a6;
+}
+.cs-sidenav-list {
+  list-style: none;
+  min-height: 0;
+  overflow-y: auto;          /* long section lists scroll inside the nav */
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.cs-sidenav-list::-webkit-scrollbar { display: none; }
+.cs-sidenav-list a {
+  position: relative;
+  display: block;
+  padding: 5px 0 5px 12px;   /* dot gutter is always reserved, so labels never shift */
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #a1a1a6;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+/* Active dot on the left, echoing the navbar's 4px indicator */
+.cs-sidenav-list a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 2px;
+  background: var(--cs-text);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.cs-sidenav-list a:hover { color: var(--cs-text-primary); }
+.cs-sidenav-list a[aria-current] { color: var(--cs-text); font-weight: 500; }
+.cs-sidenav-list a[aria-current]::before { opacity: 1; transform: none; }
+
+/* Anchor offsets so the fixed navbar never covers a section after navigation */
+.cs-page .cs-section[id] { scroll-margin-top: var(--cs-nav-h); }
+.cs-page [id]:not(.cs-section) { scroll-margin-top: calc(var(--cs-nav-h) + 40px); }
+
+/* Only when the outer margin can hold the nav with real breathing room
+   (≥40px edge, matching the navbar + ≈105px nav + ≥56px to content): (viewport − 940) / 2 ≥ 200 → ≥ 1340px.
+   Below that, the hero link + compact floating pill take over. */
+@media (min-width: 1340px) {
+  .cs-sidenav-rail {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: calc((100% - var(--cs-content)) / 2 + var(--cs-shift)); /* the side-nav column: everything left of the content */
+    padding-top: calc(var(--cs-nav-h) + 24px);
+    z-index: 30;
+    pointer-events: none;
+  }
+  .cs-sidenav {
+    position: sticky;
+    top: calc(var(--cs-nav-h) + 24px);
+    width: max-content;
+    max-width: calc(100% - max(40px, 12%) - 56px); /* long labels wrap, never reaching the content */
+    max-height: calc(100vh - var(--cs-nav-h) - 48px);
+    margin: 0 0 0 max(40px, 12%);                   /* on the navbar's 40px edge line; clear gap to the content */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    pointer-events: auto;
+  }
+  /* Asymmetric desktop grid: [side nav + gap] [content 940] [narrower right margin].
+     The content keeps its width; it moves right by --cs-shift and the left column grows by the same amount. */
+  .cs-page[data-sidenav] { --cs-shift: clamp(48px, 4vw, 88px); }
+  .cs-page[data-sidenav] .cs-container,
+  .cs-page[data-sidenav] .cs-hero-inner {
+    margin-left: calc(50% - var(--cs-content) / 2 + var(--cs-shift));
+    margin-right: 0;
+  }
+  .cs-page[data-sidenav] .cs-float-back { display: none; }
+}
+
+.cs-footer {
+  background: #0b0b0d;
+  border-top: 0.556px solid #6c6c6c;
+  padding: 56px 40px 88px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--cs-text-ondark);
+}
+
+/* ── Tablet ── */
+@media (max-width: 1000px) {
+  /* Phone row becomes a swipeable strip instead of shrinking the mockups */
+  .cs-devices {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin: 0 calc(var(--cs-gutter) * -1);
+    padding: 0 var(--cs-gutter);
+    scroll-padding: 0 var(--cs-gutter);
+  }
+  .cs-devices::-webkit-scrollbar { display: none; }
+  .cs-device { scroll-snap-align: start; }
+}
+
+@media (max-width: 860px) {
+  .cs-grid-3 { grid-template-columns: 1fr; }
+  .cs-insight { min-height: 0; }
+  .cs-insight-body { flex: 0 0 auto; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 720px) {
+  .cs-hero { padding-top: calc(var(--cs-nav-h) + 64px); padding-bottom: 64px; }
+  .cs-hero-eyebrow { font-size: 20px; margin-top: 8px; }
+  .cs-hero-title { font-size: 32px; line-height: 40px; }
+  .cs-section { padding-top: 72px; padding-bottom: 72px; }
+  /* Hierarchy: hero 32 → section 26 → subsection 20 → body 16 */
+  .cs-title { font-size: 26px; line-height: 32px; letter-spacing: -0.6px; }
+  .cs-subtitle, .cs-ba-label { font-size: 20px; line-height: 28px; }
+  /* Tighter rhythm inside sections (dividers, consecutive subsections) */
+  .cs-container { gap: min(var(--cs-gap, 40px), 48px); }
+  .cs-split { grid-template-columns: 1fr; row-gap: 40px; }
+  .cs-grid-2 { grid-template-columns: 1fr; }
+  .cs-highlight { flex-direction: column; padding: 32px 24px; gap: 32px; }
+  .cs-card { padding: 32px 24px; }
+  .cs-meta { flex-direction: column; gap: 16px; }
+  .cs-meta-item { padding: 4px 0 4px 20px; }
+
+  .cs-ba { flex-direction: column; }
+  .cs-ba-card { padding: 32px 24px; }
+  .cs-ba-arrow { transform: rotate(90deg); }
+
+  .cs-takeaway { padding: 32px 24px 0; }
+  .cs-takeaway-label { font-size: 20px; }
+  .cs-takeaway-text { font-size: 17px; line-height: 1.4; }
+
+  /* Smaller supporting copy inside cards (body copy elsewhere stays 16px) */
+  .cs-ba-text .cs-ba-label, .cs-ba-text .cs-subtitle { font-size: 18px; line-height: 26px; }
+  .cs-ba-text .cs-body, .cs-card .cs-body, .cs-card .cs-body-muted, .cs-highlight-stat .cs-body { font-size: 15px; line-height: 24px; }
+  .cs-takeaway-media { position: relative; left: auto; bottom: auto; width: 170%; margin: -14% 0 -16% -35%; }
+
+  .cs-float { bottom: max(16px, env(safe-area-inset-bottom)); }
+  .cs-to-top { right: 16px; }
+  .cs-float-back { left: 16px; }
+  .cs-footer { padding: 40px 20px 72px; }
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────────
+   One restrained system: opacity + ≤12px travel, quick stagger, eased. Reveals play
+   when content enters and reset once it is well out of view (useReveal).
+   Hidden states live only inside `no-preference`, so reduced-motion users (and
+   anything outside the observer) always see content. */
+@media (prefers-reduced-motion: no-preference) {
+  .cs-page { --cs-ease: cubic-bezier(0.22, 0.61, 0.36, 1); }
+
+  /* Scroll reveals (useReveal): `translate` composes with any existing transform */
+  .cs-reveal-item {
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.6s var(--cs-ease), translate 0.6s var(--cs-ease);
+    transition-delay: calc(var(--i, 0) * var(--cs-stagger, 80ms));
+  }
+  [data-revealed] > .cs-reveal-item,
+  [data-revealed] .cs-reveal-item { opacity: 1; translate: 0 0; }
+
+  /* Before → After: the arrow travels along the reading direction */
+  .cs-ba > .cs-ba-arrow.cs-reveal-item { translate: -8px 0; }
+  [data-revealed] > .cs-ba-arrow.cs-reveal-item { translate: 0 0; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 720px) {
+  .cs-ba > .cs-ba-arrow.cs-reveal-item { translate: 0 -8px; }
+}
+
+/* ── Inspectable images (lightbox trigger) ── */
+.cs-inspect {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  border-radius: 16px;
+  cursor: zoom-in;
+}
+.cs-inspect-block { width: 100%; }
+.cs-inspect:focus-visible { outline: 1.5px solid #0b0b0d; outline-offset: 4px; }
+.cs-inspect-cue {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f2f2f4;
+  background: rgba(10, 10, 13, 0.72);
+  border: 0.556px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+.cs-inspect:hover .cs-inspect-cue,
+.cs-inspect:focus-visible .cs-inspect-cue { opacity: 1; transform: none; }
+/* Touch devices: no hover, so the cue stays visible (quietly) */
+@media (hover: none) {
+  .cs-inspect-cue { opacity: 0.85; transform: none; width: 26px; height: 26px; top: 8px; right: 8px; }
+}
+
+/* ── Lightbox (portaled to <body>, so values are literal rather than --cs-*) ── */
+.cs-lightbox { position: fixed; inset: 0; z-index: 100; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+.cs-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 13, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.cs-lightbox-scroll {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 80px 24px 40px;
+  cursor: zoom-out;
+}
+.cs-lightbox-img {
+  margin: auto;               /* centers, yet a zoomed-in image stays scrollable from the top */
+  height: auto;
+  /* Fallback until the exact fit width is computed: never taller/wider than the area */
+  max-width: 100%;
+  max-height: calc(100dvh - 120px);
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  cursor: default;
+}
+.cs-lightbox-img[data-zoom='in'] { cursor: zoom-in; }
+.cs-lightbox-img[data-zoom='out'] { cursor: zoom-out; max-height: none; }
+.cs-lightbox-close {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0b0b0d;
+  background: rgba(242, 242, 244, 0.78);
+  border: 0.556px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 0.2s ease;
+}
+.cs-lightbox-close:hover { background: rgba(242, 242, 244, 0.95); }
+.cs-lightbox-close:focus-visible { outline: 1.5px solid #f2f2f4; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .cs-lightbox-backdrop, .cs-lightbox-close { transition: opacity 0.2s ease; }
+  .cs-lightbox-img { transition: opacity 0.2s ease, translate 0.25s cubic-bezier(0.22, 0.61, 0.36, 1); }
+  .cs-lightbox[data-state='opening'] :is(.cs-lightbox-backdrop, .cs-lightbox-close, .cs-lightbox-img),
+  .cs-lightbox[data-state='closing'] :is(.cs-lightbox-backdrop, .cs-lightbox-close, .cs-lightbox-img) { opacity: 0; }
+  .cs-lightbox[data-state='opening'] .cs-lightbox-img,
+  .cs-lightbox[data-state='closing'] .cs-lightbox-img { translate: 0 8px; }
+}
+
+@media (max-width: 720px) {
+  .cs-lightbox-scroll { padding: 72px 12px 24px; }
+  .cs-lightbox-img { border-radius: 12px; }
+  .cs-lightbox-close { width: 40px; height: 40px; }
+}
