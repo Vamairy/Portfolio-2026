@@ -6,6 +6,7 @@ import Resume from './Resume'
 import IzziCase from './IzziCase'
 import GluoCase from './GluoCase'
 import BebbiaCase from './BebbiaCase'
+import IzziSellersCase from './IzziSellersCase'
 import ScrollManager from './components/ScrollManager'
 import './index.css'
 
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/work/izzi" element={<IzziCase />} />
         <Route path="/work/gluo" element={<GluoCase />} />
         <Route path="/work/bebbia" element={<BebbiaCase />} />
+        <Route path="/work/izzi-sellers" element={<IzziSellersCase />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

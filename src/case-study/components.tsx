@@ -42,7 +42,7 @@ export function BulletList({ items }: { items: React.ReactNode[] }) {
  * Hero: artwork, project name and a headline with an accent-gradient phrase.
  * Pass `artwork` for a single image, or `media` for a composed artwork (layered HTML).
  */
-export function CaseHero({ artwork, media, gap, eyebrow, lead, highlight, highlightAngle }: {
+export function CaseHero({ artwork, media, gap, eyebrow, lead, highlight, highlightAngle, highlightFirst = false, highlightAccent }: {
   artwork?: { src: string; width: number; height: number; alt?: string }
   media?: React.ReactNode
   /** Space between the artwork and the project name */
@@ -51,10 +51,22 @@ export function CaseHero({ artwork, media, gap, eyebrow, lead, highlight, highli
   lead: string
   highlight: string
   highlightAngle?: number
+  /** Put the highlighted phrase before the lead ("Rebuilding trust in a sales team's daily tool") */
+  highlightFirst?: boolean
+  /** Gradient stops for the highlight when it differs from the page accent */
+  highlightAccent?: [string, string]
 }) {
   // Entrance: artwork, then project name, then headline
   const ref = useRef<HTMLDivElement>(null)
   useReveal(ref, { selector: '.cs-hero-art, .cs-hero-eyebrow, .cs-hero-title', stagger: 130 })
+  const accent = (
+    <GradientText
+      angle={highlightAngle}
+      style={{ fontWeight: 600, ...(highlightAccent && { '--cs-accent-from': highlightAccent[0], '--cs-accent-to': highlightAccent[1] }) } as React.CSSProperties}
+    >
+      {highlight}
+    </GradientText>
+  )
   return (
     <header className="cs-hero">
       <div ref={ref} className="cs-hero-inner">
@@ -72,8 +84,7 @@ export function CaseHero({ artwork, media, gap, eyebrow, lead, highlight, highli
           )}
         <p className="cs-hero-eyebrow">{eyebrow}</p>
         <h1 className="cs-hero-title">
-          <span>{lead}</span>{' '}
-          <GradientText angle={highlightAngle} style={{ fontWeight: 600 }}>{highlight}</GradientText>
+          {highlightFirst ? <>{accent}{' '}<span>{lead}</span></> : <><span>{lead}</span>{' '}{accent}</>}
         </h1>
       </div>
     </header>
@@ -252,20 +263,22 @@ export function HighlightPanel({ title, body, stat }: {
   )
 }
 
-/** Dark closing card with a statement and a device image anchored below it. */
+/** Dark closing card with a statement and (optionally) a device image anchored below it. */
 export function TakeawayCard({ label, children, image, className }: {
   label: string
   children: React.ReactNode
-  image: { src: string; alt: string }
+  image?: { src: string; alt: string }
   className?: string
 }) {
   return (
     <div className={cx('cs-takeaway', className)}>
       <p className="cs-takeaway-label">{label}</p>
       <p className="cs-takeaway-text">{children}</p>
-      <div className="cs-takeaway-media">
-        <img src={image.src} alt={image.alt} loading="lazy" />
-      </div>
+      {image && (
+        <div className="cs-takeaway-media">
+          <img src={image.src} alt={image.alt} loading="lazy" />
+        </div>
+      )}
     </div>
   )
 }
@@ -305,13 +318,15 @@ export function MediaFrame({ src, alt, aspectRatio, width, height, radius = 0, b
  * narrower screens. Devices reveal with a light stagger as the row enters view,
  * and open in the lightbox when `detailWidth` is set.
  */
-export function DeviceShowcase({ devices, width, height, detailWidth }: {
+export function DeviceShowcase({ devices, width, height, detailWidth, radius = 32 }: {
   /** `caption` adds a short line under the device */
   devices: { src: string; alt: string; caption?: React.ReactNode }[]
   width: number
   height: number
   /** When set, each device opens in the lightbox at this width */
   detailWidth?: number
+  /** Corner radius of the lightbox trigger (focus ring) */
+  radius?: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
   useReveal(ref, { selector: ':scope > *', stagger: 90 })
@@ -322,7 +337,7 @@ export function DeviceShowcase({ devices, width, height, detailWidth }: {
         const device = (
           <div className="cs-device" role={d.caption ? undefined : 'listitem'} style={{ width, height }}>
             {detailWidth
-              ? <Inspectable src={d.src} alt={d.alt} width={detailWidth} block style={{ height: '100%', borderRadius: 32 }}>{img}</Inspectable>
+              ? <Inspectable src={d.src} alt={d.alt} width={detailWidth} block style={{ height: '100%', borderRadius: radius }}>{img}</Inspectable>
               : img}
           </div>
         )
@@ -334,6 +349,90 @@ export function DeviceShowcase({ devices, width, height, detailWidth }: {
             </figure>
           )
           : <React.Fragment key={d.src}>{device}</React.Fragment>
+      })}
+    </div>
+  )
+}
+
+/**
+ * Circular percentage: a ring filled clockwise from 3 o'clock, with the value and
+ * its label as real text. The arc draws in when the ring enters view.
+ */
+export function RingStat({ value, label, size = 180, thickness = 16.56 }: {
+  /** 0–100 */
+  value: number
+  label: string
+  size?: number
+  thickness?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  useReveal(ref, { selector: '.cs-ring-dial', stagger: 0 })
+  const id = React.useId()
+  const r = size / 2 - thickness / 2 - 1.5
+  const c = 2 * Math.PI * r
+  return (
+    <div ref={ref} className="cs-ring">
+      <div className="cs-ring-dial" style={{ width: size }}>
+        <svg viewBox={`0 0 ${size} ${size}`} aria-hidden>
+          <defs>
+            <linearGradient id={id} x1="0" y1="0" x2="1" y2="0.1">
+              <stop offset="0.01" stopColor="var(--cs-ring-from)" />
+              <stop offset="0.99" stopColor="var(--cs-ring-to)" />
+            </linearGradient>
+          </defs>
+          <circle cx={size / 2} cy={size / 2} r={size / 2 - 1.5} className="cs-ring-track" />
+          <circle cx={size / 2} cy={size / 2} r={size / 2 - thickness - 1.5} fill="#fff" />
+          <circle
+            className="cs-ring-arc"
+            cx={size / 2}
+            cy={size / 2}
+            r={r}
+            fill="none"
+            stroke={`url(#${id})`}
+            strokeWidth={thickness}
+            strokeDasharray={`${(c * value) / 100} ${c}`}
+            style={{ '--cs-ring-len': (c * value) / 100 } as React.CSSProperties}
+          />
+        </svg>
+        <p className="cs-ring-value">{value}%</p>
+      </div>
+      <p className="cs-body-muted cs-ring-label">{label}</p>
+    </div>
+  )
+}
+
+/**
+ * Numbered columns on a dark surface, each pairing a short mechanic (number, title,
+ * description) with the screen that delivers it. Three across on desktop; a
+ * contained swipeable strip on smaller screens so every card keeps its phone.
+ */
+export function FeatureColumns({ items, imageWidth, imageHeight, detailWidth }: {
+  items: { number: string; title: string; body: string; image: { src: string; alt: string } }[]
+  imageWidth: number
+  imageHeight: number
+  /** When set, each screen opens in the lightbox at this width */
+  detailWidth?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  useReveal(ref, { selector: '.cs-feature', stagger: 110 })
+  return (
+    <div ref={ref} className="cs-features" role="list">
+      {items.map(item => {
+        const img = <img src={item.image.src} alt={item.image.alt} width={imageWidth} height={imageHeight} loading="lazy" />
+        return (
+          <div key={item.number} className="cs-feature" role="listitem">
+            <div className="cs-feature-text">
+              <GradientText as="p" angle={128} className="cs-number">{item.number}</GradientText>
+              <h3 className="cs-subtitle cs-feature-title">{item.title}</h3>
+              <p className="cs-body">{item.body}</p>
+            </div>
+            <div className="cs-feature-media">
+              {detailWidth
+                ? <Inspectable src={item.image.src} alt={item.image.alt} width={detailWidth} style={{ borderRadius: 20 }}>{img}</Inspectable>
+                : img}
+            </div>
+          </div>
+        )
       })}
     </div>
   )
