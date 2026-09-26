@@ -164,6 +164,27 @@ html.cs-root {
   gap: 16px;
 }
 
+/* Quiet in-page link at the foot of a card */
+.cs-card-link {
+  margin-top: auto;
+  padding-top: 16px;
+  align-self: flex-start;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--cs-text-secondary);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+.cs-card-link:hover { color: var(--cs-text); }
+.cs-card-link:focus-visible { outline: 1.5px solid var(--cs-text); outline-offset: 3px; }
+
+/* Participant quote */
+.cs-quote { display: flex; flex-direction: column; gap: 16px; margin: 0; }
+.cs-quote-mark { font-size: 56px; line-height: 32px; height: 28px; font-weight: 600; }
+.cs-quote-text { flex: 1 0 auto; font-size: 20px; line-height: 30px; font-weight: 400; color: var(--cs-text); }
+
 .cs-bullets { display: flex; flex-direction: column; gap: 16px; }
 .cs-bullets li { display: flex; align-items: flex-start; gap: 12px; list-style: none; }
 .cs-bullets li::before {
@@ -185,6 +206,8 @@ html.cs-root {
 }
 .cs-device { flex: 0 0 auto; }
 .cs-device img { width: 100%; height: 100%; object-fit: cover; }
+.cs-device-figure { flex: 0 0 auto; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.cs-device-caption { font-size: 14px; line-height: 20px; color: var(--cs-text-secondary); text-align: center; }
 
 /* ── Before → After ── */
 .cs-ba { display: flex; align-items: stretch; gap: 16px; }
@@ -509,7 +532,7 @@ html.cs-root {
     scroll-padding: 0 var(--cs-gutter);
   }
   .cs-devices::-webkit-scrollbar { display: none; }
-  .cs-device { scroll-snap-align: start; }
+  .cs-device, .cs-device-figure { scroll-snap-align: start; }
 }
 
 @media (max-width: 860px) {
@@ -540,6 +563,7 @@ html.cs-root {
   .cs-ba-card { padding: 32px 24px; }
   .cs-ba-arrow { transform: rotate(90deg); }
 
+  .cs-quote-text { font-size: 18px; line-height: 28px; }
   .cs-takeaway { padding: 32px 24px 0; }
   .cs-takeaway-label { font-size: 20px; }
   .cs-takeaway-text { font-size: 17px; line-height: 1.4; }

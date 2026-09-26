@@ -1,0 +1,299 @@
+/* Bebbia case study — project art direction on top of the shared case-study system.
+   Brand values from the Bebbia design system (Figma 108:36347): primary blue #1b5eea,
+   navy #00205b and the 100–900 water-blue scale. */
+
+.cs-page {
+  --bb-navy: #00205b;
+  --bb-navy-deep: #001439;
+  --bb-screen-shadow: 0 24px 48px rgba(0, 32, 91, 0.12), 0 2px 6px rgba(0, 32, 91, 0.06);
+}
+
+/* ── Hero: three funnel steps, low → high → low ── */
+.bb-hero-art { display: flex; justify-content: center; }
+/* Quieter headline than the shared hero scale (Bebbia only) */
+.cs-hero:has(.bb-hero-art) .cs-hero-title { font-size: 36px; line-height: 44px; letter-spacing: -0.4px; }
+.bb-hero-screens {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 32px;
+}
+.bb-hero-screen {
+  --w: 208px;
+  width: var(--w);
+  aspect-ratio: 1 / 2;
+  border-radius: 30px;
+  border: 6px solid #fff;
+  background: #fff;
+  box-shadow: var(--bb-screen-shadow);
+  overflow: hidden;
+  /* Outer steps share the lower baseline; the middle one is raised */
+  translate: 0 36px;
+}
+.bb-hero-screen:nth-child(2) { translate: 0 0; }
+.bb-hero-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+/* ── Context (shared light-gray band) ── */
+.bb-context-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 360fr) minmax(0, 540fr);
+  column-gap: 40px;
+  row-gap: 40px;
+  align-items: center;
+}
+.bb-context-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.bb-context-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 32px;
+  border-radius: 32px;
+  border: 1px solid var(--cs-border);
+}
+/* Same 40px scale as the portfolio's highlighted stats */
+.bb-context-value { font-size: 40px; line-height: 48px; font-weight: 600; letter-spacing: -1px; }
+.bb-context-label { font-size: 16px; line-height: 24px; color: var(--cs-text-secondary); }
+.bb-leak { display: flex; gap: 4px; color: var(--cs-accent-from); margin: 4px 0 2px; }
+.bb-leak-drop { color: #b9c0cb; }
+
+/* ── Result: raw screens framed like the hero ── */
+.bb-glance .cs-device {
+  border-radius: 32px;
+  border: 6px solid #fff;
+  background: #fff;
+  box-shadow: var(--bb-screen-shadow);
+  overflow: hidden;
+}
+.bb-glance .cs-device img { object-position: top; }
+@media (min-width: 1001px) {
+  .bb-glance .cs-devices { justify-content: center; gap: 56px; }
+}
+
+/* ── Research ── */
+.bb-research-intro { display: flex; flex-direction: column; gap: 24px; max-width: 560px; }
+.bb-heuristic {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: 40px;
+  align-items: center;
+  padding: 40px;
+  border-radius: 32px;
+  background: linear-gradient(var(--cs-tint-angle), var(--cs-tint-from) 0%, var(--cs-tint-to) 100%);
+}
+.bb-eval-screens { display: flex; gap: 24px; }
+.bb-eval-screen { position: relative; width: 200px; }
+.bb-eval-screen img { width: 100%; height: auto; }
+.bb-notes { list-style: none; display: flex; flex-direction: column; gap: 48px; }
+.bb-note { display: flex; align-items: center; gap: 12px; font-size: 18px; line-height: 26px; font-weight: 600; color: var(--cs-text-primary); }
+.bb-notes-start .bb-note { flex-direction: row-reverse; text-align: right; }
+.bb-marker {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--cs-accent-from), var(--cs-accent-to));
+  box-shadow: 0 0 0 3px #fff, 0 4px 10px rgba(0, 32, 91, 0.18);
+}
+.bb-eval-screen .bb-marker { position: absolute; translate: -50% -50%; pointer-events: none; }
+
+/* ── Strategy ── */
+.bb-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.bb-grid-4 .cs-card { padding: 32px; }
+
+/* ── Funnel flow: 12 → 7 first, the step lists second ── */
+.bb-flow-intro { max-width: 560px; }
+.bb-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr);
+  column-gap: 40px;
+  padding: 56px;
+  border-radius: 32px;
+  border: 1px solid var(--cs-border);
+}
+.bb-flow-col { display: flex; flex-direction: column; }
+.bb-flow-label { font-size: 24px; line-height: 32px; font-weight: 600; color: var(--cs-text-primary); }
+.bb-flow-count { display: flex; align-items: baseline; gap: 8px; font-size: 16px; line-height: 24px; color: var(--cs-text-secondary); margin: 4px 0 28px; }
+.bb-flow-num { font-size: 40px; line-height: 48px; font-weight: 600; letter-spacing: -1px; color: #b9c0cb; }
+.bb-flow-col-after .bb-flow-num { color: transparent; }
+/* One transition between the two counts, level with the numbers */
+.bb-flow-arrow { align-self: start; margin-top: 48px; height: 24px; }
+.bb-flow-arrow svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.bb-flow-steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 2px; border-top: 1px solid var(--cs-line); padding-top: 16px; }
+.bb-flow-steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 10px;
+  padding: 5px 0;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--cs-text-secondary);
+}
+.bb-flow-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  width: 24px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #a1a1a6;
+}
+.bb-flow-col-after .bb-flow-steps li { font-weight: 500; color: var(--cs-text); padding: 8px 0; }
+.bb-tag {
+  display: inline-flex;
+  vertical-align: 1px;
+  margin-left: 4px;
+  padding: 1px 8px;
+  border-radius: 100px;
+  font-size: 11px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0a5fd0;
+  background: rgba(20, 185, 255, 0.14);
+}
+
+/* ── Before → After screens ── */
+.bb-ba-screens { display: flex; justify-content: center; gap: 16px; width: 100%; }
+.bb-ba-screen-btn { flex: 0 1 150px; min-width: 0; border-radius: 16px; }
+.bb-ba-screen {
+  width: 100%;
+  aspect-ratio: 1 / 2;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e3e8ef;
+  box-shadow: 0 10px 24px rgba(0, 32, 91, 0.08);
+}
+.bb-ba-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.bb-ba-desktop {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e3e8ef;
+  box-shadow: 0 10px 24px rgba(0, 32, 91, 0.08);
+}
+.bb-ba-desktop img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+.bb-ds { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+.bb-palette { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px; list-style: none; }
+.bb-palette li { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bb-swatch { width: 100%; aspect-ratio: 1; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(0, 32, 91, 0.08); }
+.bb-swatch-step { font-size: 11px; line-height: 14px; color: var(--cs-text-secondary); }
+.bb-ds-row { width: 100%; height: auto; }
+
+/* ── Impact: izzi CMS composition; only the Takeaway art direction is Bebbia-specific ── */
+.bb-takeaway {
+  background:
+    radial-gradient(60% 90% at 100% 100%, rgba(20, 185, 255, 0.22) 0%, rgba(20, 185, 255, 0) 70%),
+    linear-gradient(135deg, var(--bb-navy) 0%, var(--bb-navy-deep) 100%);
+}
+/* Phones anchored to the card's bottom edge, centered under the statement */
+.bb-takeaway .cs-takeaway-media { left: 50%; width: 66%; translate: -50% 0; bottom: -22%; }
+.bb-takeaway .cs-takeaway-media img { -webkit-mask-image: none; mask-image: none; }
+
+/* ── Tablet ── */
+@media (max-width: 1000px) {
+  .bb-hero-screen { --w: 180px; }
+  .bb-hero-screens { gap: 20px; }
+  .bb-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bb-flow { grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr); column-gap: 24px; padding: 40px; }
+  .bb-heuristic { grid-template-columns: 1fr; row-gap: 32px; justify-items: center; }
+  .bb-heuristic .bb-eval-screens { order: -1; }
+  .bb-notes { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px 32px; }
+  .bb-notes-start .bb-note { flex-direction: row; text-align: left; }
+  .bb-heuristic .bb-notes-start, .bb-heuristic .bb-notes-end { width: 100%; }
+}
+
+@media (max-width: 860px) {
+  .bb-context-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 720px) {
+  /* Stepped row becomes three overlapping screens */
+  .cs-hero:has(.bb-hero-art) .cs-hero-title { font-size: 26px; line-height: 34px; }
+  .bb-hero-screens { gap: 0; }
+  .bb-hero-screen { --w: min(38vw, 150px); border-width: 4px; border-radius: 22px; translate: 0 20px; }
+  .bb-hero-screen + .bb-hero-screen { margin-left: -8vw; }
+  .bb-hero-screen:nth-child(2) { z-index: 1; }
+
+  .bb-context-stat { padding: 24px; }
+  .bb-context-value { font-size: 32px; line-height: 40px; }
+  .bb-glance .cs-device { border-width: 4px; }
+
+  .bb-heuristic { padding: 32px 16px; }
+  .bb-eval-screens { gap: 12px; }
+  .bb-eval-screen { width: min(40vw, 180px); }
+  .bb-notes { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .bb-note { font-size: 16px; line-height: 24px; }
+
+  .bb-grid-4 { grid-template-columns: 1fr; }
+  .bb-grid-4 .cs-card { padding: 24px; }
+
+  /* Funnel flow → contained swipe between two full cards; the After card peeks in */
+  .bb-flow-wrap { display: flex; flex-direction: column; gap: 12px; }
+  .bb-flow {
+    display: flex;
+    gap: 12px;
+    padding: 0 var(--cs-gutter);
+    margin: 0 calc(var(--cs-gutter) * -1);
+    border: 0;
+    border-radius: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--cs-gutter);
+    scrollbar-width: none;
+  }
+  .bb-flow::-webkit-scrollbar { display: none; }
+  .bb-flow:focus-visible { outline: 1.5px solid var(--cs-text); outline-offset: -2px; }
+  .bb-flow-col {
+    flex: 0 0 86%;
+    scroll-snap-align: start;
+    padding: 28px 24px;
+    border-radius: 32px;
+    border: 1px solid var(--cs-border);
+    background: #fff;
+  }
+  .bb-flow-col-after { scroll-snap-align: end; }
+  .bb-flow-arrow { display: none; }
+  .bb-flow-label { font-size: 20px; line-height: 28px; }
+  .bb-flow-num { font-size: 32px; line-height: 40px; }
+  .bb-flow-count { margin-bottom: 20px; }
+  .bb-flow-steps li { font-size: 14px; line-height: 20px; }
+
+  .bb-ba-screens { gap: 10px; }
+
+  .bb-takeaway .cs-takeaway-media { position: relative; left: auto; bottom: auto; translate: none; width: 62%; margin: 8px auto -38%; }
+}
+
+@media (max-width: 480px) {
+  .bb-context-stats { grid-template-columns: 1fr; }
+}
+
+/* ── Motion (same restrained system; hidden states only when motion is allowed) ── */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero: the steps rise in order */
+  .bb-hero-screen { animation: bb-rise 0.7s var(--cs-ease) both; animation-delay: calc(200ms + var(--n) * 120ms); }
+
+  /* Context: three of four users drift away */
+  .bb-leak-drop { transition: color 0.7s var(--cs-ease); transition-delay: calc(700ms + var(--n) * 120ms); }
+  .bb-context-stats:not([data-revealed]) .bb-leak-drop { color: var(--cs-accent-from); transition: none; }
+
+  /* Funnel flow: the transition draws from Before toward After */
+  .bb-flow .bb-flow-arrow.cs-reveal-item { translate: -12px 0; }
+  .bb-flow[data-revealed] .bb-flow-arrow.cs-reveal-item { translate: 0 0; }
+  /* …then keeps drifting gently toward After (a few px, slow ease; static with reduced motion) */
+  .bb-flow[data-revealed] .bb-flow-arrow svg { animation: bb-drift 3.2s var(--cs-ease) 1.2s infinite; }
+}
+
+@keyframes bb-drift { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+@keyframes bb-rise { from { opacity: 0; transform: translateY(16px); } }

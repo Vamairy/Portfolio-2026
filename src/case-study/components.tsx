@@ -179,26 +179,59 @@ export function InsightCard({ title, body, stat }: { title: string; body: React.
   )
 }
 
-/** Numbered objective / principle card. */
-export function NumberedCard({ number, title, body }: { number: string; title: string; body: string }) {
+/** Numbered objective / principle card, optionally pointing to where it is shown on the page. */
+export function NumberedCard({ number, title, body, link }: {
+  number: string
+  title: string
+  body?: string
+  /** Quiet in-page link to the section that shows this item */
+  link?: { href: string; label: string }
+}) {
   return (
     <div className="cs-card cs-card-outline cs-stack" style={{ gap: 4 }}>
       <GradientText as="p" angle={143} className="cs-number">{number}</GradientText>
       <h3 className="cs-subtitle">{title}</h3>
-      <p className="cs-body">{body}</p>
+      {body && <p className="cs-body">{body}</p>}
+      {link && (
+        <a
+          className="cs-card-link"
+          href={link.href}
+          onClick={e => {
+            // Same in-page scroll as the side navigation (no hash in the URL)
+            const el = document.getElementById(link.href.slice(1))
+            if (!el) return
+            e.preventDefault()
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }}
+        >
+          {link.label}<span aria-hidden> ↓</span>
+        </a>
+      )}
     </div>
   )
 }
 
-/** Outlined outcome card: gradient metric + description. */
-export function MetricCard({ value, label }: { value: string; label: string }) {
+/** Outlined outcome card: gradient metric + description (and an optional from → to detail). */
+export function MetricCard({ value, label, detail }: { value: string; label: string; detail?: string }) {
   return (
     <div className="cs-card cs-card-outline">
       <div className="cs-stat">
         <GradientText as="p" angle={140} className="cs-stat-value">{value}</GradientText>
         <p className="cs-body">{label}</p>
+        {detail && <p className="cs-body-muted">{detail}</p>}
       </div>
     </div>
+  )
+}
+
+/** Participant quote, optionally with a quiet attribution line. The mark opens the quote. */
+export function QuoteCard({ quote, attribution }: { quote: string; attribution?: string }) {
+  return (
+    <figure className="cs-card cs-card-outline cs-quote">
+      <GradientText as="span" angle={140} className="cs-quote-mark">“</GradientText>
+      <blockquote className="cs-quote-text">{quote}</blockquote>
+      {attribution && <figcaption className="cs-body-muted">{attribution}</figcaption>}
+    </figure>
   )
 }
 
@@ -220,13 +253,14 @@ export function HighlightPanel({ title, body, stat }: {
 }
 
 /** Dark closing card with a statement and a device image anchored below it. */
-export function TakeawayCard({ label, children, image }: {
+export function TakeawayCard({ label, children, image, className }: {
   label: string
   children: React.ReactNode
   image: { src: string; alt: string }
+  className?: string
 }) {
   return (
-    <div className="cs-takeaway">
+    <div className={cx('cs-takeaway', className)}>
       <p className="cs-takeaway-label">{label}</p>
       <p className="cs-takeaway-text">{children}</p>
       <div className="cs-takeaway-media">
@@ -272,25 +306,34 @@ export function MediaFrame({ src, alt, aspectRatio, width, height, radius = 0, b
  * and open in the lightbox when `detailWidth` is set.
  */
 export function DeviceShowcase({ devices, width, height, detailWidth }: {
-  devices: { src: string; alt: string }[]
+  /** `caption` adds a short line under the device */
+  devices: { src: string; alt: string; caption?: React.ReactNode }[]
   width: number
   height: number
   /** When set, each device opens in the lightbox at this width */
   detailWidth?: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  useReveal(ref, { selector: '.cs-device', stagger: 90 })
+  useReveal(ref, { selector: ':scope > *', stagger: 90 })
   return (
     <div ref={ref} className="cs-devices" role="list">
       {devices.map(d => {
         const img = <img src={d.src} alt={d.alt} loading="lazy" />
-        return (
-          <div key={d.src} className="cs-device" role="listitem" style={{ width, height }}>
+        const device = (
+          <div className="cs-device" role={d.caption ? undefined : 'listitem'} style={{ width, height }}>
             {detailWidth
               ? <Inspectable src={d.src} alt={d.alt} width={detailWidth} block style={{ height: '100%', borderRadius: 32 }}>{img}</Inspectable>
               : img}
           </div>
         )
+        return d.caption
+          ? (
+            <figure key={d.src} className="cs-device-figure" role="listitem" style={{ width }}>
+              {device}
+              <figcaption className="cs-device-caption">{d.caption}</figcaption>
+            </figure>
+          )
+          : <React.Fragment key={d.src}>{device}</React.Fragment>
       })}
     </div>
   )
