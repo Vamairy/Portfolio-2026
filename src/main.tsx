@@ -5,6 +5,7 @@ import App from './AppV2'
 import Resume from './Resume'
 import IzziCase from './IzziCase'
 import GluoCase from './GluoCase'
+import IzziSellersCase from './IzziSellersCase'
 import ScrollManager from './components/ScrollManager'
 import './index.css'
 
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/resume" element={<Resume />} />
         <Route path="/work/izzi" element={<IzziCase />} />
         <Route path="/work/gluo" element={<GluoCase />} />
+        <Route path="/work/izzi-sellers" element={<IzziSellersCase />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

@@ -1,0 +1,85 @@
+/* izzi Sellers case study — project-specific compositions (shared styles live in case-study/case-study.css) */
+
+/* ── Overview media card: the device render spills past its glow card (Figma 91:1607) ── */
+.sl-overview-media {
+  position: relative;
+  align-self: start;
+  aspect-ratio: 450 / 280;
+  border-radius: 32px;
+  background-size: 100% 100%;
+}
+.sl-overview-media img {
+  position: absolute;
+  left: -7.34%;
+  top: -16.79%;
+  width: 114.67%;
+  height: auto;
+}
+
+/* ── Context: legacy screens with captions ── */
+.sl-legacy-pair { display: flex; gap: 40px; justify-content: center; }
+.sl-legacy-pair figure {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.sl-legacy-pair figcaption { text-align: center; }
+.cs-page .sl-legacy { max-width: 100%; height: auto; }
+
+/* ── Result: final screens float on the glow ── */
+.sl-glance .cs-device-media img { filter: drop-shadow(0 5px 10px rgba(87, 119, 156, 0.12)); object-fit: contain; }
+
+/* ── Research: two ring stats beside the findings ── */
+.sl-rings { display: flex; gap: 20px; align-items: flex-start; align-self: start; }
+.sl-rings > * { flex: 1 1 0; }
+
+/* ── Strategy: title-only cards; rows equalize like the Figma grid ── */
+.sl-strategy { align-items: stretch; }
+
+/* ── A gamified approach (dark) ── */
+.sl-gamified { padding-top: 80px; }
+.sl-on-dark { color: var(--cs-text-ondark); }
+.sl-gamified .cs-feature-media img {
+  margin-left: -8px; /* the export includes the white device frame */
+  box-shadow: 0 4px 8px 1px rgba(87, 119, 156, 0.1);
+  border-radius: 20px;
+}
+
+/* ── Before → After media ── */
+.sl-after-screen { border-radius: 16px; box-shadow: 0 4px 10px rgba(87, 119, 156, 0.1); }
+
+/* ── Closing showcase: three columns of product cards (Figma 105:35647) ── */
+.sl-showcase-scroll { margin-top: 0; }
+.sl-showcase {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 936.63 / 723.33;
+}
+/* Exports carry their shadows on white; multiply lets overlapping margins drop out on the white section */
+.cs-page .sl-showcase-col { position: absolute; max-width: none; mix-blend-mode: multiply; }
+
+/* ── Tablet ── */
+@media (max-width: 1000px) {
+  .sl-legacy-pair { gap: 24px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 720px) {
+  .sl-overview-media { width: 100%; margin-top: 16px; }
+  .sl-legacy-pair { gap: 16px; }
+  .sl-rings { gap: 16px; }
+
+  /* The showcase keeps its composition inside a contained horizontal scroll */
+  .sl-showcase-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 calc(var(--cs-gutter) * -1);
+    padding: 0 var(--cs-gutter);
+  }
+  .sl-showcase-scroll::-webkit-scrollbar { display: none; }
+  .sl-showcase { width: 640px; }
+}

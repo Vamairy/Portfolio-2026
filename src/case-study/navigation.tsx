@@ -146,6 +146,10 @@ export function CaseStudySideNav({ sections, label = 'Now viewing' }: { sections
     }
   }, [sections])
 
+  // Labels switch to light ink while the nav sits over a dark section
+  const navRef = useRef<HTMLElement>(null)
+  const tone = useGlassTone(navRef)
+
   const go = (e: React.MouseEvent, id: string) => {
     const el = document.getElementById(id)
     if (!el) return
@@ -156,7 +160,7 @@ export function CaseStudySideNav({ sections, label = 'Now viewing' }: { sections
 
   return (
     <div className="cs-sidenav-rail">
-      <nav className="cs-sidenav" aria-label="Case study sections">
+      <nav ref={navRef} className="cs-sidenav" data-tone={tone} aria-label="Case study sections">
         <InlineWorkPill />
         {/* Section list appears once the first section is reached; Work stays regardless */}
         <div className="cs-sidenav-sections" data-visible={active ? 'true' : 'false'} aria-hidden={!active}>

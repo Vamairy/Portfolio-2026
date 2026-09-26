@@ -185,6 +185,62 @@ html.cs-root {
 }
 .cs-device { flex: 0 0 auto; }
 .cs-device img { width: 100%; height: 100%; object-fit: cover; }
+/* Captioned variant: label under the device (e.g. the screen's name) */
+.cs-device-captioned { margin: 0; display: flex; flex-direction: column; gap: 24px; }
+.cs-device-captioned figcaption { text-align: center; }
+
+/* ── Ring stat ── */
+.cs-ring {
+  --cs-ring-from: #ff6c07;
+  --cs-ring-to: #f47e28;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+}
+.cs-ring-dial { position: relative; max-width: 100%; aspect-ratio: 1; container-type: inline-size; }
+.cs-ring-dial svg { display: block; width: 100%; height: 100%; }
+.cs-ring-track { fill: #f5f6f8; }
+.cs-ring-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: min(40px, 22cqw); /* scales down with the dial */
+  line-height: normal;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  background-image: linear-gradient(101deg, var(--cs-ring-from) 5.17%, var(--cs-ring-to) 94.83%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.cs-ring-label { text-align: center; }
+
+/* ── Feature columns (dark surface) ── */
+.cs-features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.cs-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px;
+  border: 1px solid var(--cs-line);
+  border-radius: 32px;
+  min-width: 0;
+}
+.cs-feature-text { display: flex; flex-direction: column; gap: 4px; }
+/* Titles share one 64px band so single- and two-line titles keep descriptions aligned */
+.cs-feature-title { min-height: 64px; display: flex; align-items: center; color: var(--cs-text-ondark); }
+.cs-feature .cs-body { color: var(--cs-text-ondark); }
+.cs-feature-media { margin-top: auto; }
+.cs-feature-media img { max-width: 100%; height: auto; }
+
+/* Dark section surface: headings and copy switch to on-dark ink */
+.cs-section-dark .cs-title,
+.cs-section-dark .cs-container > .cs-body { color: var(--cs-text-ondark); }
 
 /* ── Before → After ── */
 .cs-ba { display: flex; align-items: stretch; gap: 16px; }
@@ -437,6 +493,14 @@ html.cs-root {
 .cs-sidenav-list a:hover { color: var(--cs-text-primary); }
 .cs-sidenav-list a[aria-current] { color: var(--cs-text); font-weight: 500; }
 .cs-sidenav-list a[aria-current]::before { opacity: 1; transform: none; }
+/* Over dark sections (tone sampled from the surface behind the nav) */
+.cs-sidenav, .cs-sidenav-label { transition: color 0.35s ease; }
+.cs-sidenav[data-tone='light'] .cs-sidenav-label,
+.cs-sidenav[data-tone='light'] .cs-sidenav-list a { color: #8e8e93; }
+.cs-sidenav[data-tone='light'] .cs-sidenav-list a:hover { color: #d1d1d6; }
+.cs-sidenav[data-tone='light'] .cs-sidenav-list a[aria-current] { color: #f2f2f4; }
+.cs-sidenav[data-tone='light'] .cs-sidenav-list a::before { background: #f2f2f4; }
+.cs-sidenav[data-tone='light'] .cs-sidenav-list a:focus-visible { outline-color: #f2f2f4; }
 
 /* Anchor offsets so the fixed navbar never covers a section after navigation */
 .cs-page .cs-section[id] { scroll-margin-top: var(--cs-nav-h); }
@@ -510,6 +574,19 @@ html.cs-root {
   }
   .cs-devices::-webkit-scrollbar { display: none; }
   .cs-device { scroll-snap-align: start; }
+
+  /* Feature columns → contained swipeable strip; each card keeps its screen */
+  .cs-features {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin: 0 calc(var(--cs-gutter) * -1);
+    padding: 0 var(--cs-gutter);
+    scroll-padding: 0 var(--cs-gutter);
+  }
+  .cs-features::-webkit-scrollbar { display: none; }
+  .cs-feature { flex: 0 0 300px; scroll-snap-align: start; }
 }
 
 @media (max-width: 860px) {
@@ -541,6 +618,11 @@ html.cs-root {
   .cs-ba-arrow { transform: rotate(90deg); }
 
   .cs-takeaway { padding: 32px 24px 0; }
+  .cs-takeaway:not(:has(.cs-takeaway-media)) { padding-bottom: 32px; }
+  .cs-feature { flex-basis: min(280px, 78vw); padding: 32px 24px; gap: 32px; }
+  .cs-feature .cs-body { font-size: 15px; line-height: 24px; }
+  .cs-feature-title { min-height: 56px; }
+  .cs-device-captioned { gap: 16px; }
   .cs-takeaway-label { font-size: 20px; }
   .cs-takeaway-text { font-size: 17px; line-height: 1.4; }
 
@@ -593,6 +675,10 @@ html.cs-root {
   }
   [data-revealed] > .cs-reveal-item,
   [data-revealed] .cs-reveal-item { opacity: 1; translate: 0 0; }
+
+  /* Ring stats: the arc draws clockwise from its start */
+  .cs-ring-arc { transition: stroke-dashoffset 1.1s var(--cs-ease) 0.15s; }
+  .cs-ring:not([data-revealed]) .cs-ring-arc { stroke-dashoffset: var(--cs-ring-len); }
 
   /* Before → After: the arrow travels along the reading direction */
   .cs-ba > .cs-ba-arrow.cs-reveal-item { translate: -8px 0; }
