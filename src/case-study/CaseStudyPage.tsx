@@ -17,6 +17,17 @@ export type CaseStudyTheme = {
   glowBase?: string
   /** Top color of the hero's vertical gradient */
   heroTop?: string
+  /** Full hero background, when a project's hero isn't the default vertical fade */
+  heroBackground?: string
+  /** One gradient direction for all accent text (overrides per-layer angles), in degrees */
+  accentAngle?: number
+  /** Accent gradient color-stop positions, e.g. ['17.9%', '76.9%'] */
+  accentStops?: [string, string]
+  /** Outline color for cards and "Before" panels */
+  border?: string
+  /** Direction (degrees) and first stop of the "After" panel tint */
+  tintAngle?: number
+  tintStart?: string
 }
 
 function themeVars(theme?: CaseStudyTheme): React.CSSProperties | undefined {
@@ -29,6 +40,13 @@ function themeVars(theme?: CaseStudyTheme): React.CSSProperties | undefined {
     '--cs-glow': theme.glow,
     '--cs-glow-base': theme.glowBase,
     '--cs-hero-top': theme.heroTop,
+    '--cs-hero-bg': theme.heroBackground,
+    '--cs-accent-angle': theme.accentAngle !== undefined ? `${theme.accentAngle}deg` : undefined,
+    '--cs-accent-start': theme.accentStops?.[0],
+    '--cs-accent-end': theme.accentStops?.[1],
+    '--cs-border': theme.border,
+    '--cs-tint-angle': theme.tintAngle !== undefined ? `${theme.tintAngle}deg` : undefined,
+    '--cs-tint-start': theme.tintStart,
   }
   return Object.fromEntries(Object.entries(vars).filter(([, v]) => v)) as React.CSSProperties
 }

@@ -50,7 +50,12 @@ html.cs-root {
 .cs-body p + p { margin-top: 8px; }
 
 .cs-gradient-text {
-  background-image: linear-gradient(var(--cs-angle, 125deg), var(--cs-accent-from) 5.17%, var(--cs-accent-to) 94.83%);
+  /* A theme-level --cs-accent-angle (when set) wins over per-layer angles */
+  background-image: linear-gradient(
+    var(--cs-accent-angle, var(--cs-angle, 125deg)),
+    var(--cs-accent-from) var(--cs-accent-start, 5.17%),
+    var(--cs-accent-to) var(--cs-accent-end, 94.83%)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -59,7 +64,7 @@ html.cs-root {
 
 /* ── Hero ── */
 .cs-hero {
-  background: linear-gradient(180deg, var(--cs-hero-top) 4.327%, #fbfbfb 71.154%, #fff 99.038%);
+  background: var(--cs-hero-bg, linear-gradient(180deg, var(--cs-hero-top) 4.327%, #fbfbfb 71.154%, #fff 99.038%));
   padding: calc(var(--cs-nav-h) + 80px) var(--cs-gutter) 80px;
 }
 .cs-hero-inner {
@@ -135,6 +140,8 @@ html.cs-root {
   min-height: 440px;
 }
 .cs-insight-body { flex: 1 0 auto; }
+/* Without a supporting stat the card simply hugs its text (row height still equalizes) */
+.cs-insight-compact { min-height: 0; }
 .cs-insight-rule { height: 1px; background: var(--cs-line); }
 
 .cs-number { font-size: 24px; font-weight: 700; letter-spacing: -0.6px; line-height: normal; }
@@ -192,7 +199,7 @@ html.cs-root {
   border-radius: 32px;
 }
 .cs-ba-before { border: 1px solid var(--cs-border); }
-.cs-ba-after { background-image: linear-gradient(130deg, var(--cs-tint-from) 0%, var(--cs-tint-to) 100%); }
+.cs-ba-after { background-image: linear-gradient(var(--cs-tint-angle, 130deg), var(--cs-tint-from) var(--cs-tint-start, 0%), var(--cs-tint-to) 100%); }
 .cs-ba-media { flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .cs-ba-text { width: 100%; display: flex; flex-direction: column; }
 .cs-ba-label { font-size: 24px; line-height: normal; font-weight: 400; color: var(--cs-text-primary); }
@@ -223,6 +230,49 @@ html.cs-root {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%);
   mask-image: linear-gradient(to bottom, transparent 0, #000 12%);
 }
+
+/* ── Bleed showcase ──
+   The row spans the viewport (breaks out of the column) and stays centered on the
+   content column: its left edge is pulled to the viewport edge and padding re-centers
+   it by the column's desktop shift. Items size from the column width (--col). */
+.cs-bleed {
+  --col: min(var(--cs-content), 100cqw - 2 * var(--cs-gutter));
+  container-type: inline-size;
+  width: 100vw;
+  margin-left: calc(50% - 50vw - var(--cs-shift));
+  padding-left: calc(2 * var(--cs-shift));
+  display: flex;
+  justify-content: center; /* overflows evenly on both sides */
+  align-items: flex-start;
+}
+.cs-bleed-item {
+  flex: 0 0 auto;
+  width: calc(var(--col) * var(--w) / var(--base));
+  aspect-ratio: var(--w) / var(--h);
+}
+.cs-bleed-item[data-slot='start'] { order: -1; }
+.cs-bleed-item[data-slot='end'] { order: 1; }
+.cs-bleed-item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cs-bleed-framed img { border: 1px solid #e4e4e4; background: #fff; }
+
+/* ── Interlude band ── */
+.cs-interlude { padding: 100px var(--cs-gutter) 0; overflow: hidden; }
+.cs-container.cs-interlude-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 390fr) minmax(0, 470fr);
+  column-gap: 80px;
+  align-items: center;
+}
+.cs-interlude-text {
+  padding-bottom: 56px;
+  font-size: clamp(30px, 3.2vw, 40px);
+  line-height: 1.4;
+  font-weight: 300;
+  text-align: right;
+  color: var(--cs-interlude-ink, rgba(19, 19, 19, 0.5));
+}
+.cs-interlude-media { align-self: end; }
+.cs-interlude-media img { display: block; width: 100%; height: auto; }
 
 /* ── Chrome: back link, back-to-top, footer ── */
 /* Pill link in the portfolio's outline-button language (HoverFillLink, dark variant) */
@@ -428,6 +478,12 @@ html.cs-root {
     margin-right: 0;
   }
   .cs-page[data-sidenav] .cs-float-back { display: none; }
+  /* Bleed compositions fade out before the navigation column */
+  .cs-page[data-sidenav] .cs-bleed {
+    --nav-edge: calc(50% - var(--cs-content) / 2 + var(--cs-shift));
+    -webkit-mask-image: linear-gradient(90deg, transparent calc(var(--nav-edge) - 88px), #000 calc(var(--nav-edge) - 16px));
+    mask-image: linear-gradient(90deg, transparent calc(var(--nav-edge) - 88px), #000 calc(var(--nav-edge) - 16px));
+  }
 }
 
 .cs-footer {
@@ -492,6 +548,27 @@ html.cs-root {
   .cs-ba-text .cs-ba-label, .cs-ba-text .cs-subtitle { font-size: 18px; line-height: 26px; }
   .cs-ba-text .cs-body, .cs-card .cs-body, .cs-card .cs-body-muted, .cs-highlight-stat .cs-body { font-size: 15px; line-height: 24px; }
   .cs-takeaway-media { position: relative; left: auto; bottom: auto; width: 170%; margin: -14% 0 -16% -35%; }
+
+  /* Bleed showcase → one swipeable row in design order (start · featured · end),
+     opening on the featured device with both neighbors peeking in */
+  .cs-bleed {
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 0 var(--cs-gutter);
+    scroll-padding: 0 var(--cs-gutter);
+  }
+  .cs-bleed::-webkit-scrollbar { display: none; }
+  .cs-bleed-item { width: 78cqw; scroll-snap-align: center; }
+  .cs-bleed-framed { width: 66cqw; }
+
+  .cs-interlude { padding-top: 72px; }
+  .cs-container.cs-interlude-inner { grid-template-columns: 1fr; row-gap: 32px; }
+  .cs-interlude-text { padding-bottom: 0; font-size: 28px; line-height: 38px; text-align: left; }
+  .cs-interlude-media { justify-self: center; width: min(100%, 360px); }
 
   .cs-float { bottom: max(16px, env(safe-area-inset-bottom)); }
   .cs-to-top { right: 16px; }

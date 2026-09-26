@@ -1,0 +1,145 @@
+/* gluo case study — project-specific compositions (shared styles live in case-study/case-study.css) */
+
+/* ── Hero artwork: layered like Figma 71:33874 (821.94 × 437), positions in % so it scales ── */
+.gl-hero-art {
+  position: relative;
+  width: min(822px, 100%);
+  aspect-ratio: 821.94 / 437;
+  margin: 0 auto;
+}
+.gl-hero-art img { position: absolute; }
+.gl-hero-screen { position: absolute; left: 11.25%; top: 11.91%; width: 62.75%; height: 73.04%; overflow: hidden; }
+.gl-hero-laptop { left: 0; top: 0; width: 85.33%; height: 100%; }
+.gl-hero-led { position: absolute; left: 40.17%; top: 88.4%; width: 4.83%; height: 2.35%; background: #252524; }
+.gl-hero-character { position: absolute; left: 75.75%; top: 36.83%; width: 24.25%; height: 63.17%; overflow: hidden; }
+
+/* ── Overview media card ── */
+.gl-overview-media { position: relative; height: 280px; border-radius: 32px; overflow: hidden; align-self: start; }
+.gl-overview-hand { position: absolute !important; left: 0; top: -4px; }
+
+/* ── Context: crop of the full-page capture of the old site (Figma 71:33856) ── */
+.gl-old-site {
+  aspect-ratio: 561 / 374;
+  border: 1px solid #9f9f9f;
+  border-radius: 8px;
+  background: #fff;
+}
+.gl-old-site img { left: -0.67%; top: -324.33%; width: 100.67%; height: 807%; object-fit: cover; }
+
+/* ── Research ── */
+.gl-research-intro { max-width: 430px; }
+.gl-full-img { width: 100%; height: auto; }
+
+/* ── Before → After media ── */
+.cs-page .gl-ba-img { max-width: 100%; height: auto; }
+
+/* ── Card sorting ────────────────────────────────────────────────────────────
+   Desktop reproduces the Figma board (940 × 472): two 2×2 groups, one card
+   mid-drag (offset), a loose "Certifications" card and collaborators' cursors.
+   Narrower screens reflow each group into a readable grid. */
+.gl-sort-group { min-width: 0; }
+.gl-sort-label {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  text-align: center;
+  width: max-content;
+  margin: 0 auto 12px;
+}
+.gl-sort-cards { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.gl-sort-card { position: relative; }
+.gl-sort-box {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  background: #fff;
+  border: 1px solid #636363;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 18px;
+  color: #131313;
+  text-align: center;
+}
+
+/* Collaborator cursor: arrow at the point, name tag hanging below-right (or below-left when flipped) */
+.gl-cursor { position: absolute; left: var(--x); top: var(--y); z-index: 1; width: 0; height: 0; pointer-events: none; }
+.gl-cursor img { position: absolute; left: 0; top: 0; max-width: none; }
+.gl-cursor-tag {
+  position: absolute;
+  left: 18px;
+  top: 20px;
+  padding: 8px 20px 8px 16px;
+  border: 2px solid var(--tag-border);
+  border-radius: 2px 24px 24px 24px;
+  background: var(--tag-bg);
+  filter: drop-shadow(4px 4px 5px var(--tag-shadow));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Desktop board: exact Figma composition */
+@media (min-width: 1020px) {
+  .gl-sort { position: relative; height: 472px; }
+  .gl-sort-group { position: absolute; top: 14px; width: 384px; }
+  .gl-sort-services { left: 3px; }
+  .gl-sort-work { left: 418px; }
+  .gl-sort-label { margin-bottom: 14px; }
+  .gl-sort-cards { grid-template-columns: repeat(2, 180px); gap: 24px; }
+  .gl-sort-box { width: 180px; padding: 0 21px; }
+  .gl-sort-services .gl-sort-card:nth-child(4) { translate: 0 30px; } /* card mid-drag */
+  .gl-sort-card-loose { position: absolute; left: 342px; top: -14px; } /* Certifications, on top at the board's corner */
+}
+
+/* Reflow: two groups side by side (tablet), stacked (mobile); tags that would
+   run off the right edge hang to the left instead */
+@media (max-width: 1019px) {
+  .gl-cursor { top: var(--y-reflow, var(--y)); }
+  .gl-sort { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; }
+  .gl-cursor[data-flip] .gl-cursor-tag {
+    left: auto;
+    right: -2px;
+    padding: 8px 16px 8px 20px;
+    border-radius: 24px 2px 24px 24px;
+  }
+}
+/* Mobile: the two groups stay side by side (Services | Our work); each group's
+   cards stack in one column of shorter cards so labels stay readable. Cursors sit
+   near a card's bottom edge with the tag hanging left, inside their own column. */
+@media (max-width: 720px) {
+  .gl-sort { gap: 32px 12px; }
+  .gl-sort-label { font-size: 20px; line-height: 26px; margin-bottom: 10px; }
+  .gl-sort-cards { grid-template-columns: 1fr; gap: 8px; }
+  .gl-sort-box { aspect-ratio: auto; min-height: 64px; padding: 8px 10px; font-size: 13px; line-height: 17px; }
+  .gl-sort-box s { margin-bottom: 6px; }
+  .gl-cursor { left: 92%; top: 56%; }
+  .gl-cursor .gl-cursor-tag {
+    left: auto;
+    right: -2px;
+    top: 13px;
+    padding: 4px 8px 4px 10px;
+    border-radius: 16px 2px 16px 16px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .gl-cursor img { width: 18px; height: auto; }
+  .gl-overview-hand { left: 50%; transform: translateX(-50%); }
+}
+
+/* Cursors join after the cards have settled (reduced motion: always visible) */
+@media (prefers-reduced-motion: no-preference) {
+  .gl-cursor { opacity: 0; translate: -6px -6px; transition: opacity 0.45s var(--cs-ease), translate 0.45s var(--cs-ease); }
+  [data-revealed] .gl-cursor { opacity: 1; translate: 0 0; transition-delay: calc(700ms + var(--c, 0) * 220ms); }
+}
+
+/* Renamed card: struck-out old label above the new one (Figma: 10px apart) */
+.gl-sort-box s { display: block; margin-bottom: 10px; }
+
+/* Before → After triggers never exceed their card on narrow screens */
+.gl-ba-inspect { max-width: 100%; }

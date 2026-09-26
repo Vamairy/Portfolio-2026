@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useReveal } from './motion'
 import { Inspectable } from './lightbox'
 
@@ -38,9 +38,15 @@ export function BulletList({ items }: { items: React.ReactNode[] }) {
 
 // ── Layout ────────────────────────────────────────────────────────────────────
 
-/** Hero: artwork, project name and a headline with an accent-gradient phrase. */
-export function CaseHero({ artwork, eyebrow, lead, highlight, highlightAngle }: {
-  artwork: { src: string; width: number; height: number; alt?: string }
+/**
+ * Hero: artwork, project name and a headline with an accent-gradient phrase.
+ * Pass `artwork` for a single image, or `media` for a composed artwork (layered HTML).
+ */
+export function CaseHero({ artwork, media, gap, eyebrow, lead, highlight, highlightAngle }: {
+  artwork?: { src: string; width: number; height: number; alt?: string }
+  media?: React.ReactNode
+  /** Space between the artwork and the project name */
+  gap?: number
   eyebrow: string
   lead: string
   highlight: string
@@ -52,14 +58,18 @@ export function CaseHero({ artwork, eyebrow, lead, highlight, highlightAngle }: 
   return (
     <header className="cs-hero">
       <div ref={ref} className="cs-hero-inner">
-        <img
-          className="cs-hero-art"
-          src={artwork.src}
-          alt={artwork.alt ?? ''}
-          width={artwork.width}
-          height={artwork.height}
-          style={{ width: `min(${artwork.width}px, 100%)` }}
-        />
+        {media
+          ? <div className="cs-hero-art" style={{ width: '100%', marginBottom: gap }}>{media}</div>
+          : artwork && (
+            <img
+              className="cs-hero-art"
+              src={artwork.src}
+              alt={artwork.alt ?? ''}
+              width={artwork.width}
+              height={artwork.height}
+              style={{ width: `min(${artwork.width}px, 100%)`, marginBottom: gap }}
+            />
+          )}
         <p className="cs-hero-eyebrow">{eyebrow}</p>
         <h1 className="cs-hero-title">
           <span>{lead}</span>{' '}
@@ -71,10 +81,11 @@ export function CaseHero({ artwork, eyebrow, lead, highlight, highlightAngle }: 
 }
 
 /** Full-bleed section with a 940px content column and optional section title. */
-export function Section({ id, title, background, gap = 40, className, style, children }: {
+export function Section({ id, title, titleAlign, background, gap = 40, className, style, children }: {
   /** Anchor for the side navigation */
   id?: string
   title?: React.ReactNode
+  titleAlign?: 'left' | 'center'
   background?: string
   /** Vertical gap between the title and each direct child block */
   gap?: number
@@ -85,7 +96,7 @@ export function Section({ id, title, background, gap = 40, className, style, chi
   return (
     <section id={id} className={cx('cs-section', className)} style={{ background, ...style }}>
       <div className="cs-container" style={{ '--cs-gap': `${gap}px` } as React.CSSProperties}>
-        {title && <h2 className="cs-title">{title}</h2>}
+        {title && <h2 className="cs-title" style={titleAlign ? { textAlign: titleAlign } : undefined}>{title}</h2>}
         {children}
       </div>
     </section>
@@ -154,14 +165,16 @@ export function StatCard({ label, children, style }: { label: string; children: 
   )
 }
 
-/** Audience / pain-point card: title, description, rule, supporting stat. */
-export function InsightCard({ title, body, stat }: { title: string; body: React.ReactNode; stat: { value: string; label: string } }) {
+/** Audience / pain-point card: title, description and (optionally) a rule + supporting stat. */
+export function InsightCard({ title, body, stat }: { title: string; body: React.ReactNode; stat?: { value: string; label: string } }) {
   return (
-    <div className="cs-card cs-insight">
+    <div className={cx('cs-card cs-insight', !stat && 'cs-insight-compact')}>
       <h3 className="cs-subtitle">{title}</h3>
       <p className="cs-body cs-insight-body">{body}</p>
-      <div className="cs-insight-rule" role="presentation" />
-      <Stat value={stat.value} label={stat.label} />
+      {stat && <>
+        <div className="cs-insight-rule" role="presentation" />
+        <Stat value={stat.value} label={stat.label} />
+      </>}
     </div>
   )
 }
@@ -319,5 +332,97 @@ export function BeforeAfter({ title, before, after, arrow, textGap = 8 }: {
         </div>
       </div>
     </div>
+  )
+}
+
+type ShowcaseImage = { src: string; alt: string; width: number; height: number }
+
+/**
+ * A featured device flanked by two framed screenshots that run past the content
+ * column to the viewport edges. Sizes are the design's px at `baseWidth` (the
+ * content column) and scale with the column. The composition stays centered on
+ * the content column; next to the desktop side nav its left edge fades out so it
+ * never runs under the navigation. On mobile it becomes a swipeable strip.
+ */
+export function BleedShowcase({ center, sides, baseWidth = 940, radius = 24, detailWidth }: {
+  center: ShowcaseImage
+  sides: [ShowcaseImage, ShowcaseImage]
+  baseWidth?: number
+  /** Corner radius of the framed side screenshots */
+  radius?: number
+  /** When set, every image opens in the lightbox at up to this width */
+  detailWidth?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  // Featured device first, then the flanking screenshots
+  useReveal(ref, { selector: '.cs-bleed-item', stagger: 110 })
+
+  // When the row scrolls (mobile strip), open it on the featured device
+  useEffect(() => {
+    const row = ref.current
+    if (!row) return
+    const centerOnFeatured = () => {
+      const featured = row.querySelector<HTMLElement>('[data-slot="center"]')
+      if (!featured || row.scrollWidth <= row.clientWidth) return
+      const f = featured.getBoundingClientRect()
+      const r = row.getBoundingClientRect()
+      row.scrollLeft += f.left + f.width / 2 - (r.left + r.width / 2)
+    }
+    centerOnFeatured()
+    const mq = window.matchMedia('(max-width: 720px)')
+    mq.addEventListener('change', centerOnFeatured)
+    return () => mq.removeEventListener('change', centerOnFeatured)
+  }, [])
+
+  const item = (img: ShowcaseImage, slot: 'center' | 'start' | 'end') => {
+    const framed = slot !== 'center'
+    const content = <img src={img.src} alt={img.alt} loading="lazy" style={framed ? { borderRadius: radius } : undefined} />
+    return (
+      <div
+        key={slot}
+        className={cx('cs-bleed-item', framed && 'cs-bleed-framed')}
+        data-slot={slot}
+        role="listitem"
+        style={{ '--w': img.width, '--h': img.height, '--r': `${radius}px` } as React.CSSProperties}
+      >
+        {detailWidth
+          ? <Inspectable src={img.src} alt={img.alt} width={detailWidth} block style={{ height: '100%', borderRadius: framed ? radius : 16 }}>{content}</Inspectable>
+          : content}
+      </div>
+    )
+  }
+
+  return (
+    <div ref={ref} className="cs-bleed" role="list" style={{ '--base': baseWidth } as React.CSSProperties}>
+      {item(center, 'center')}
+      {item(sides[0], 'start')}
+      {item(sides[1], 'end')}
+    </div>
+  )
+}
+
+/**
+ * Full-bleed colored band with a short statement beside an image that sits flush
+ * on the band's bottom edge (e.g. a device crop). Colors come from props, so the
+ * band carries no project styling of its own.
+ */
+export function InterludeBand({ background, ink, image, children }: {
+  background: string
+  /** Statement color; keep ≥3:1 against the background (large text) */
+  ink?: string
+  image: { src: string; alt: string; width: number; height: number }
+  children: React.ReactNode
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  useReveal(ref, { selector: '.cs-interlude-text, .cs-interlude-media', stagger: 160 })
+  return (
+    <section className="cs-interlude" style={{ background, '--cs-interlude-ink': ink } as React.CSSProperties}>
+      <div ref={ref} className="cs-container cs-interlude-inner">
+        <p className="cs-interlude-text">{children}</p>
+        <div className="cs-interlude-media">
+          <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" />
+        </div>
+      </div>
+    </section>
   )
 }
