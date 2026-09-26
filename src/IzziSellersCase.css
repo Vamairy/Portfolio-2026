@@ -31,7 +31,10 @@
 .cs-page .sl-legacy { max-width: 100%; height: auto; }
 
 /* ── Result: final screens float on the glow ── */
-.sl-glance .cs-device-media img { filter: drop-shadow(0 5px 10px rgba(87, 119, 156, 0.12)); object-fit: contain; }
+.sl-glance .cs-device img { filter: drop-shadow(0 5px 10px rgba(87, 119, 156, 0.12)); object-fit: contain; }
+/* Captions follow the Sellers Figma (16/26, 24px below the screen) rather than the shared 14px default */
+.sl-glance .cs-device-figure { gap: 24px; }
+.sl-glance .cs-device-caption { font-size: 16px; line-height: 26px; }
 
 /* ── Research: two ring stats beside the findings ── */
 .sl-rings { display: flex; gap: 20px; align-items: flex-start; align-self: start; }
@@ -72,6 +75,7 @@
   .sl-overview-media { width: 100%; margin-top: 16px; }
   .sl-legacy-pair { gap: 16px; }
   .sl-rings { gap: 16px; }
+  .sl-glance .cs-device-figure { gap: 16px; }
 
   /* The showcase keeps its composition inside a contained horizontal scroll */
   .sl-showcase-scroll {

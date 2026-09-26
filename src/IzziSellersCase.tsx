@@ -141,9 +141,8 @@ export default function IzziSellersCase() {
       </Section>
 
       {/* ── The redesign at a glance ── */}
-      <Section id="result" title="The redesign at a glance" titleAlign="center" background={glanceGlow}>
+      <Section id="result" title="The redesign at a glance" titleAlign="center" background={glanceGlow} className="sl-glance">
         <DeviceShowcase
-          className="sl-glance"
           width={206}
           height={420}
           radius={25}
