@@ -184,6 +184,9 @@ html.cs-root {
 .cs-quote { display: flex; flex-direction: column; gap: 16px; margin: 0; }
 .cs-quote-mark { font-size: 56px; line-height: 32px; height: 28px; font-weight: 600; }
 .cs-quote-text { flex: 1 0 auto; font-size: 20px; line-height: 30px; font-weight: 400; color: var(--cs-text); }
+/* Research finding (QuoteCard variant="finding"): headline + explanation, no quotation mark */
+.cs-finding { gap: 12px; }
+.cs-finding .cs-finding-title { flex: 0 0 auto; font-weight: 600; }
 
 .cs-bullets { display: flex; flex-direction: column; gap: 16px; }
 .cs-bullets li { display: flex; align-items: flex-start; gap: 12px; list-style: none; }
@@ -281,6 +284,29 @@ html.cs-root {
 .cs-ba-label { font-size: 24px; line-height: normal; font-weight: 400; color: var(--cs-text-primary); }
 .cs-ba-arrow { flex: 0 0 26px; align-self: center; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
 .cs-ba-arrow img { width: 37.06px; height: 36.71px; }
+/* Text-only "Before" (no visual evidence of the old state): a narrower card, text centered */
+.cs-ba-textonly .cs-ba-before { flex: 0 0 30%; justify-content: center; }
+.cs-ba-textonly .cs-ba-after { flex: 1 1 0; }
+
+/* Annotated screen: numbered markers placed on a product screen */
+.cs-annotated { position: relative; }
+.cs-annotated img { width: 100%; height: auto; }
+.cs-annotated .cs-marker { position: absolute; translate: -50% -50%; pointer-events: none; }
+.cs-marker {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--cs-accent-from), var(--cs-accent-to));
+  box-shadow: 0 0 0 3px #fff, 0 4px 10px rgba(11, 11, 13, 0.18);
+}
+.cs-marker[data-tone='neutral'] { background: #56575b; }
 
 /* ── Takeaway ── */
 .cs-takeaway {
@@ -349,7 +375,6 @@ html.cs-root {
 }
 .cs-interlude-media { align-self: end; }
 .cs-interlude-media img { display: block; width: 100%; height: auto; }
-
 /* ── Chrome: back link, back-to-top, footer ── */
 /* Pill link in the portfolio's outline-button language (HoverFillLink, dark variant) */
 .cs-back {
@@ -636,6 +661,7 @@ html.cs-root {
   .cs-ba { flex-direction: column; }
   .cs-ba-card { padding: 32px 24px; }
   .cs-ba-arrow { transform: rotate(90deg); }
+  .cs-ba-textonly .cs-ba-before { flex: 0 0 auto; }
 
   .cs-quote-text { font-size: 18px; line-height: 28px; }
   .cs-takeaway { padding: 32px 24px 0; }

@@ -1,0 +1,228 @@
+/* iVentas case study — project art direction on top of the shared case-study system.
+   Brand values from the product (Figma 115:38706): action azure #0099ff, mint #5ae4a7
+   (chat and illustrations), navy text #2c2e50, canvas #e5f4ff. */
+
+.cs-page {
+  --iv-navy: #2c2e50;
+  --iv-canvas: #e5f4ff;
+  --iv-screen-shadow: 0 24px 48px rgba(44, 46, 80, 0.12), 0 2px 6px rgba(44, 46, 80, 0.06);
+  /* Hero: top padding + artwork height (export ratio 1276 / 2246) */
+  --iv-hero-solid: calc(var(--cs-nav-h) + 80px + min(940px, 100vw - 2 * var(--cs-gutter)) * 0.5681);
+}
+
+/* ── Hero: the composed contacts view on its own canvas ── */
+.iv-hero-art { display: flex; justify-content: center; }
+.iv-hero-art img {
+  width: min(1000px, 100%);
+  height: auto;
+  /* The export's canvas is the hero color (#e5f4ff); only its empty bottom strip fades out */
+  -webkit-mask-image: linear-gradient(180deg, #000 88%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 88%, transparent 100%);
+}
+/* Longer headline than the other cases: a quieter scale keeps it to two lines (as Bebbia) */
+.cs-hero:has(.iv-hero-art) .cs-hero-title { font-size: 40px; line-height: 50px; letter-spacing: -0.4px; }
+
+/* ── Overview: Stage 01 → Stage 02, overlapped ── */
+.iv-evo { position: relative; aspect-ratio: 450 / 380; }
+.iv-evo-item { position: absolute; margin: 0; }
+.iv-evo-item img { width: 100%; height: auto; }
+.iv-evo-mvp { left: 0; top: 0; width: 70%; }
+.iv-evo-mvp img { border-radius: 10px; box-shadow: 0 0 0 1px #e4e8ee; opacity: 0.92; }
+.iv-evo-new { right: 0; bottom: 0; width: 82%; filter: drop-shadow(0 18px 32px rgba(44, 46, 80, 0.14)); }
+.iv-chip {
+  position: absolute;
+  z-index: 2;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--cs-border);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--cs-text-secondary);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.iv-evo-mvp .iv-chip { left: 12px; top: -14px; }
+.iv-evo-new .iv-chip { right: 16px; bottom: -14px; }
+.iv-chip-accent { color: #fff; border-color: transparent; background: linear-gradient(100deg, var(--cs-accent-from), var(--cs-accent-to)); }
+
+/* ── Context: the three roles ── */
+.iv-roles { display: flex; flex-direction: column; gap: 12px; }
+.iv-role {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(11, 11, 13, 0.1);
+}
+.iv-role img { flex: 0 0 auto; width: 56px; height: auto; }
+.iv-role-name { font-size: 18px; line-height: 26px; font-weight: 600; color: var(--cs-text-primary); }
+.iv-role .cs-body-muted { font-size: 15px; line-height: 22px; }
+
+/* ── Result: the exports carry their own frame + shadow ── */
+.iv-glance .cs-bleed-framed img { border: 0; background: none; }
+@media (min-width: 721px) {
+  .iv-glance .cs-bleed { gap: 16px; align-items: center; }
+}
+
+/* ── Section intros ── */
+.iv-intro { max-width: 620px; }
+
+/* ── Strategy: capability map ──
+   Three roomy columns × two rows in reading order (01–03, 04–06). Rows are shared across
+   each row's cards (subgrid), so numbers, titles, lines and feature lists align. */
+.iv-caps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.iv-cap {
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+  align-content: start;
+  padding: 32px;
+  border-radius: 32px;
+  border: 1px solid var(--cs-border);
+  background: #fff;
+}
+.iv-cap-n { font-size: 16px; line-height: 24px; font-weight: 700; letter-spacing: 0.5px; }
+.iv-cap-title { margin-top: 16px; font-size: 22px; line-height: 30px; font-weight: 600; color: var(--cs-text); }
+.iv-cap-body { margin-top: 8px; font-size: 16px; line-height: 26px; color: var(--cs-text-secondary); }
+.iv-cap-parts {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--cs-divider);
+}
+.iv-cap-parts li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f4f7fa;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--cs-text-primary);
+}
+
+/* ── Before → After ── */
+.iv-after-screen { width: 100%; height: auto; }
+.iv-before-screen { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 0 1px #e4e8ee, var(--iv-screen-shadow); }
+/* Both sides carry a desktop screen: slightly tighter padding gives each one more width */
+#before-after .cs-ba-card { padding: 32px; }
+.iv-team-after { position: relative; width: 100%; padding-bottom: 32px; }
+.iv-team-inset {
+  position: absolute;
+  left: 4%;
+  bottom: 0;
+  width: 46%;
+  margin: 0;
+  filter: drop-shadow(0 14px 28px rgba(44, 46, 80, 0.18));
+}
+
+/* ── Testing ── */
+.iv-test {
+  display: grid;
+  column-gap: 48px;
+  row-gap: 24px;
+  align-items: center;
+  padding: 40px;
+  border-radius: 32px;
+  border: 1px solid var(--cs-border);
+}
+.iv-test-worked { grid-template-columns: minmax(0, 580fr) minmax(0, 280fr); }
+.iv-test-iterate { grid-template-columns: minmax(0, 280fr) minmax(0, 580fr); }
+.iv-test-worked { background: linear-gradient(var(--cs-tint-angle), var(--cs-tint-from) 0%, var(--cs-tint-to) 100%); border-color: transparent; }
+.iv-test-media img { border-radius: 10px; box-shadow: 0 0 0 1px #e4e8ee, var(--iv-screen-shadow); }
+.iv-test-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.iv-screen-label { margin-top: 12px; font-size: 13px; line-height: 18px; font-weight: 600; color: var(--cs-text-secondary); }
+.iv-test-notes { display: flex; flex-direction: column; gap: 20px; }
+.iv-notes { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.iv-note { display: flex; align-items: flex-start; gap: 12px; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--cs-text-primary); }
+.iv-note .cs-marker { margin-top: -1px; }
+
+/* ── Impact: one metric, two evidence lines, one closing statement ── */
+.iv-impact-col { display: flex; flex-direction: column; gap: 16px; align-self: start; }
+/* The metric leads: taller card, content centered */
+.iv-impact .cs-card-outline { padding: 40px; min-height: 264px; display: flex; flex-direction: column; justify-content: center; }
+.iv-impact .cs-stat-value { font-size: 48px; line-height: 56px; letter-spacing: -1.2px; }
+.iv-impact .cs-stat .cs-body { font-size: 20px; line-height: 28px; font-weight: 600; color: var(--cs-text); }
+/* Supporting evidence: same card language, quieter (smaller radius, padding and type) */
+.iv-support {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px 32px;
+  border-radius: 24px;
+  border: 1px solid var(--cs-border);
+  background: #fff;
+}
+.iv-support-title { font-size: 17px; line-height: 26px; font-weight: 600; color: var(--cs-text-primary); }
+.iv-support .cs-body-muted { font-size: 15px; line-height: 22px; }
+/* iPad in hand (Figma 123:31962, transparent export): anchored to the card's bottom-right,
+   the hand leaving through the bottom edge */
+.iv-closing { min-height: 640px; }
+.iv-closing .cs-takeaway-text { max-width: 400px; line-height: 1.45; }
+.iv-closing .cs-takeaway-media { left: 12%; width: 92%; bottom: -12%; }
+.iv-closing .cs-takeaway-media img { -webkit-mask-image: none; mask-image: none; }
+
+/* ── Tablet ── */
+@media (max-width: 1000px) {
+  .iv-caps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .iv-test-worked, .iv-test-iterate { grid-template-columns: 1fr; }
+  .iv-test-iterate .iv-test-notes { order: 1; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 720px) {
+  .cs-page { --iv-hero-solid: calc(var(--cs-nav-h) + 64px + (100vw - 2 * var(--cs-gutter)) * 1.12 * 0.5681); }
+  .iv-hero-art img { width: 112%; max-width: none; margin: 0 -6%; }
+  .cs-hero:has(.iv-hero-art) .cs-hero-title { font-size: 28px; line-height: 36px; }
+
+  .iv-evo { aspect-ratio: 450 / 400; }
+  .iv-roles { gap: 8px; }
+  .iv-role { padding: 16px 20px; gap: 16px; }
+  .iv-role img { width: 48px; }
+  .iv-role-name { font-size: 16px; line-height: 24px; }
+
+  /* Capability map → contained swipe; each card stays whole and the next one peeks in */
+  .iv-caps {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin: 0 calc(var(--cs-gutter) * -1);
+    padding: 0 var(--cs-gutter) 4px;
+    scroll-padding: 0 var(--cs-gutter);
+  }
+  .iv-caps::-webkit-scrollbar { display: none; }
+  .iv-cap { flex: 0 0 min(280px, 78vw); scroll-snap-align: start; display: flex; flex-direction: column; padding: 28px 24px; }
+  .iv-cap-title { font-size: 20px; line-height: 28px; }
+  .iv-cap-body { min-height: 52px; }
+
+  /* Before → After: the Before statement stays compact above the screen */
+  #before-after .cs-ba-card { padding: 24px 20px; }
+  .iv-team-after { padding-bottom: 0; display: flex; flex-direction: column; gap: 16px; }
+  .iv-team-inset { position: static; width: 78%; align-self: flex-start; }
+
+  .iv-test { padding: 24px 20px; }
+  .iv-test-pair { grid-template-columns: 1fr; gap: 24px; }
+  .iv-note { font-size: 15px; line-height: 22px; }
+
+
+  .iv-impact .cs-card-outline { padding: 32px 24px; }
+  .iv-impact .cs-card-outline { min-height: 0; }
+  .iv-support { padding: 20px 24px; }
+  .iv-impact .cs-stat-value { font-size: 40px; line-height: 48px; letter-spacing: -1px; }
+  .iv-closing { min-height: 0; }
+  .iv-closing .cs-takeaway-media { position: relative; left: auto; bottom: auto; width: 96%; margin: 8px 0 -12% 10%; }
+}
