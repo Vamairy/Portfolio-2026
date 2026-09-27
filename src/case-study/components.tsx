@@ -241,19 +241,15 @@ export function MetricCard({ value, label, detail }: { value: string; label: str
   )
 }
 
-/**
- * Participant quote, optionally with a quiet attribution line. The mark opens the quote;
- * with `mark={false}` the card is text-led and the quote carries its own quotation marks.
- */
-export function QuoteCard({ quote, attribution, mark = true, className }: {
+/** Participant quote, optionally with a quiet attribution line. The mark opens the quote. */
+export function QuoteCard({ quote, attribution, className }: {
   quote: string
   attribution?: string
-  mark?: boolean
   className?: string
 }) {
   return (
     <figure className={cx('cs-card cs-card-outline cs-quote', className)}>
-      {mark && <GradientText as="span" angle={140} className="cs-quote-mark">“</GradientText>}
+      <GradientText as="span" angle={140} className="cs-quote-mark">“</GradientText>
       <blockquote className="cs-quote-text">{quote}</blockquote>
       {attribution && <figcaption className="cs-body-muted">{attribution}</figcaption>}
     </figure>

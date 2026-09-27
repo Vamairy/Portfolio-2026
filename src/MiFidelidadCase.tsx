@@ -36,11 +36,16 @@ const theme: CaseStudyTheme = {
   heroBackground: 'radial-gradient(60% 70% at 18% 0%, #fbeccb 0%, rgba(251, 236, 203, 0) 70%), radial-gradient(55% 65% at 88% 12%, #d5ecf1 0%, rgba(213, 236, 241, 0) 70%), linear-gradient(180deg, #fdfaf3 0%, #fbfcfc 62%, #fff 100%)',
 }
 
-// Approach accent panels (Figma 129:33239, 129:33272, 129:33307): pale aqua, aqua → butter, butter
+// Design Approach accent panels: one continuous progression down the section, built from the
+// two colors of the Figma accents (129:33272): aqua rgb(92, 205, 238) and butter rgb(255, 219, 153),
+// at low opacity on white. Each panel ends on the exact tint the next one starts with:
+// aqua → aqua · white · butter → butter.
+const aqua = (a: number) => `rgba(92, 205, 238, ${a})`
+const butter = (a: number) => `rgba(255, 219, 153, ${a})`
 const approachAccents = {
-  church: 'linear-gradient(61deg, rgb(222, 244, 251) 0.86%, rgb(255, 255, 255) 95.98%)',
-  tithe: 'linear-gradient(136deg, rgba(92, 205, 238, 0.2) 10.97%, rgba(255, 255, 255, 0.2) 37.76%, rgba(255, 219, 153, 0.2) 89.97%), #fff',
-  history: 'linear-gradient(124deg, rgb(255, 248, 234) 0%, rgb(255, 252, 245) 100%)',
+  church: `linear-gradient(180deg, ${aqua(0.24)} 0%, ${aqua(0.14)} 100%), #fff`,
+  tithe: `linear-gradient(180deg, ${aqua(0.14)} 0%, rgba(255, 255, 255, 0) 50%, ${butter(0.18)} 100%), #fff`,
+  history: `linear-gradient(180deg, ${butter(0.18)} 0%, ${butter(0.3)} 100%), #fff`,
 }
 
 // Side navigation — ids must match the anchors below
@@ -160,33 +165,25 @@ const principles: Principle[] = [
 /** The principle → the finding behind it → what it visibly changed in the UI */
 function PrincipleLedger() {
   return (
-    <div className="mf-ledger">
-      <div className="mf-ledger-head" aria-hidden>
-        <span>Principle</span>
-        <span>Research finding</span>
-        <span>What it changed in the UI</span>
-      </div>
-      <Reveal as="ol" className="mf-ledger-rows" selector=".mf-ledger-row" stagger={90}>
-        {principles.map(p => (
-          <li key={p.title} className="mf-ledger-row">
-            <div className="mf-ledger-cell mf-ledger-principle">
-              <h3 className="cs-subtitle">{p.title}</h3>
-            </div>
-            <div className="mf-ledger-cell mf-ledger-source">
-              {/* The column says "Research finding"; only the exception is labelled in the row */}
-              {p.origin === 'Design evaluation'
-                ? <p className="mf-origin-eval">Design evaluation</p>
-                : <p className="mf-ledger-label">Research finding</p>}
-              <p className="cs-body">{p.source}</p>
-            </div>
-            <div className="mf-ledger-cell mf-ledger-ui">
-              <p className="mf-ledger-label">What it changed in the UI</p>
-              <p className="cs-body">{p.consequence}</p>
-            </div>
-          </li>
-        ))}
-      </Reveal>
-    </div>
+    <Reveal as="ol" className="mf-ledger" selector=".mf-ledger-row" stagger={90}>
+      {principles.map(p => (
+        // Each value carries its own label, in the same treatment as the My role metadata
+        <li key={p.title} className="mf-ledger-row">
+          <div className="mf-ledger-cell">
+            <p className="cs-body-muted">Principle</p>
+            <h3 className="cs-subtitle">{p.title}</h3>
+          </div>
+          <div className="mf-ledger-cell">
+            <p className="cs-body-muted">{p.origin}</p>
+            <p className="cs-body">{p.source}</p>
+          </div>
+          <div className="mf-ledger-cell">
+            <p className="cs-body-muted">UI decision</p>
+            <p className="cs-body">{p.consequence}</p>
+          </div>
+        </li>
+      ))}
+    </Reveal>
   )
 }
 
@@ -336,9 +333,7 @@ export default function MiFidelidadCase() {
           {/* The one verbatim interview quote (Figma 123:40955) */}
           <QuoteCard
             className="mf-pullquote"
-            mark={false}
-            quote="“Yes, through an app, it would be easier… although I'd feel insecure about the payments being processed correctly.”"
-            attribution="Interview participant"
+            quote="Yes, through an app, it would be easier… although I'd feel insecure about the payments being processed correctly.”"
           />
         </SplitContent>
 
@@ -410,15 +405,14 @@ export default function MiFidelidadCase() {
             before={{
               // Figma 123:41278 (initial design)
               media: <Phones items={[
-                { src: `${A}/donation-before.png`, alt: 'Original donation form: amount fields for tithe and offerings, extra concept and project selectors, and an invoice checkbox', className: 'mf-phone-clipped' },
+                { src: `${A}/donation-before.png`, alt: 'Original donation form: amount fields for tithe and offerings, extra concept and project selectors, and an invoice checkbox', className: 'mf-phone-complete' },
               ]} />,
               text: 'The original donation form: amount fields with no running total.',
             }}
             after={{
               media: <Phones className="mf-phones-flow" items={[
                 screens.donation,
-                // Presentation size only (placeholder amounts), so no lightbox
-                { ...screens.receipt, inspect: false },
+                screens.receipt,
               ]} />,
               text: 'Clearer category amounts, a running total before sending and an itemized receipt after.',
             }}

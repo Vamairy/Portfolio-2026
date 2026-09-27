@@ -4,7 +4,6 @@
    stays deep aqua; warmth comes from surfaces, never from gradient text. */
 
 .cs-page {
-  --mf-aqua-deep: #123f47;
   --mf-aqua: #316e7a;
   --mf-butter: #eac37d;
   --mf-screen-shadow: 0 24px 48px rgba(18, 63, 71, 0.13), 0 2px 6px rgba(18, 63, 71, 0.06);
@@ -81,43 +80,37 @@
 .mf-approach-phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
 /* ── Research ── */
+/* The shared QuoteCard, on the case's own butter → pale-aqua tint instead of an outline.
+   The quote is supporting evidence, so it takes the Body style (.cs-body: 16/26, regular,
+   primary text) instead of the quote scale. The card hugs its content: 48px above and
+   below (the portfolio's 48px rhythm step), the shared card's 40px at the sides. */
 .mf-pullquote {
-  border: 0;
+  border-color: transparent;
   background: linear-gradient(var(--cs-tint-angle), var(--cs-tint-from) 0%, var(--cs-tint-to) 100%);
-  gap: 20px;
+  padding-top: 48px;
+  padding-bottom: 48px;
 }
-.mf-pullquote .cs-quote-text { font-size: 22px; line-height: 34px; color: var(--mf-aqua-deep); }
+.mf-pullquote .cs-quote-text { font-size: 16px; line-height: 26px; font-weight: 400; color: var(--cs-text-primary); }
 .mf-findings { align-items: stretch; }
 .mf-findings .cs-insight { gap: 12px; }
 .mf-findings .cs-insight-body { flex: 1 0 auto; }
 
-/* ── Strategy: ledger of finding → principle → UI consequence ── */
+/* ── Strategy: principle → finding / evaluation → UI decision ──
+   No table header: each value has a small label above it, like the My role metadata
+   (label cs-body-muted, 4px to its value). Rows are separated by quiet horizontal rules. */
 .mf-strategy-intro { max-width: 600px; }
-.mf-ledger-head,
+.mf-ledger { list-style: none; }
 .mf-ledger-row {
   display: grid;
   grid-template-columns: minmax(0, 300fr) minmax(0, 270fr) minmax(0, 330fr);
   column-gap: 40px;
+  padding: 32px 0;
+  border-top: 1px solid var(--cs-divider);
 }
-.mf-ledger-head {
-  padding-bottom: 16px;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #a1a1a6;
-}
-.mf-ledger-rows { list-style: none; }
-.mf-ledger-row { padding: 32px 0; border-top: 1px solid var(--cs-divider); }
 .mf-ledger-row:last-child { border-bottom: 1px solid var(--cs-divider); }
-.mf-ledger-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-/* Design evaluation reads differently from research on purpose */
-.mf-origin-eval { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a6a2a; }
-/* Principle leads each row */
-.mf-ledger-principle { gap: 8px; }
-.mf-ledger-principle .cs-subtitle { color: var(--cs-text); }
-.mf-ledger-label { display: none; }
+.mf-ledger-cell { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+/* Labels: secondary text (.cs-body-muted). Content: Primary Text, like the My role value */
+.mf-ledger-cell .cs-subtitle, .mf-ledger-cell .cs-body { color: var(--cs-text-primary); }
 
 /* ── Before & After: framed phones ── */
 /* Media hugs its phones so "Before" and "After" start on the same line */
@@ -136,13 +129,14 @@
 .mf-phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 /* The second screen sits a little lower so each pair reads as one composition */
 .mf-phones > :nth-child(2) { margin-top: 32px; }
-/* The original form is clipped in the source file; keep its right edge and top, at the
-   same screen aspect as the redesigned form it is compared with */
-.mf-phone-clipped { aspect-ratio: 720 / 1446; }
-.mf-phone-clipped img { object-position: right top; }
-/* Both donation cards reserve the pair's height (screen + the second phone's 32px offset) so the labels align */
+/* The original donation form is shown whole: the aspect ratio applies to the area inside
+   the 4px border (content-box, 142px + border = the same 150px outer width), so it matches
+   the image exactly, and contain keeps every edge of the UI visible */
+.mf-phone.mf-phone-complete { box-sizing: content-box; width: 142px; }
+.mf-phone-complete img { object-fit: contain; object-position: center; }
+/* Both donation cards reserve the taller media (the full original form, 720×1611) so the labels align */
 @media (min-width: 721px) {
-  #ba-donation .cs-ba-media { min-height: calc(150px * 1446 / 720 + 32px); justify-content: flex-start; }
+  #ba-donation .cs-ba-media { min-height: calc(150px * 1611 / 720); justify-content: flex-start; }
 }
 .mf-phones-flow .mf-phone { aspect-ratio: 720 / 1446; }
 
@@ -167,9 +161,7 @@
 }
 
 @media (max-width: 860px) {
-  .mf-ledger-head { display: none; }
-  .mf-ledger-row { grid-template-columns: 1fr; row-gap: 16px; padding: 28px 0; }
-  .mf-ledger-label { display: block; font-size: 13px; line-height: 20px; font-weight: 600; color: var(--cs-text-secondary); }
+  .mf-ledger-row { grid-template-columns: 1fr; row-gap: 20px; padding: 28px 0; }
   .cs-takeaway.mf-impact { grid-template-columns: 1fr; padding: 40px 32px 0; }
   .mf-impact .cs-takeaway-body { padding-bottom: 32px; }
   .mf-impact .cs-takeaway-aside { min-height: 320px; }
@@ -195,10 +187,15 @@
   .mf-approach-pair[data-raised='1'] > :nth-child(1) { margin-top: 44px; }
   .mf-hero-art img { object-position: 53% 45%; }
   .cs-hero:has(.mf-hero-art) .cs-hero-title { font-size: 28px; line-height: 36px; }
-  .mf-context-stats { gap: 12px; }
-  .mf-context-value { font-size: 40px; line-height: 48px; }
-  .mf-pullquote .cs-quote-text { font-size: 19px; line-height: 30px; }
+  /* Stats stack full width so their copy wraps naturally; values drop to the portfolio's
+     24px stat scale (.cs-stat-value: 24/32, 600) and cards hug their content */
+  .mf-context-stats { grid-template-columns: 1fr; gap: 12px; }
+  .mf-context-stat { gap: 4px; }
+  .mf-context-value { font-size: 24px; line-height: 32px; letter-spacing: 0; }
+  /* Same step down as body copy inside cards on mobile (.cs-card .cs-body) */
+  .mf-pullquote .cs-quote-text { font-size: 15px; line-height: 24px; }
   .mf-phone { width: 132px; }
+  .mf-phone.mf-phone-complete { width: 124px; }
   .mf-phones { gap: 12px; }
   .mf-phones > :nth-child(2) { margin-top: 24px; }
   .cs-takeaway.mf-impact { padding: 32px 24px 0; }
