@@ -61,11 +61,11 @@
 .iv-role-name { font-size: 18px; line-height: 26px; font-weight: 600; color: var(--cs-text-primary); }
 .iv-role .cs-body-muted { font-size: 15px; line-height: 22px; }
 
-/* ── Result: the exports carry their own frame + shadow ── */
-.iv-glance .cs-bleed-framed img { border: 0; background: none; }
-@media (min-width: 721px) {
-  .iv-glance .cs-bleed { gap: 16px; align-items: center; }
-}
+/* ── Design Approach (shared ApproachSection / ApproachMoment) ──
+   One product screen per moment, at the full width of the visual column, centered on its
+   accent panel with room above and below */
+.iv-approach-single { padding: 8% 0; }
+.iv-approach-single img { display: block; width: 100%; height: auto; }
 
 /* ── Section intros ── */
 .iv-intro { max-width: 620px; }

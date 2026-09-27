@@ -4,8 +4,9 @@ import { Reveal, useReveal } from './case-study/motion'
 import CaseStudyPage, { type CaseStudySection, type CaseStudyTheme } from './case-study/CaseStudyPage'
 import {
   AnnotatedScreen,
+  ApproachMoment,
+  ApproachSection,
   BeforeAfter,
-  BleedShowcase,
   CaseHero,
   Divider,
   GradientText,
@@ -43,14 +44,20 @@ const theme: CaseStudyTheme = {
   heroBackground: 'linear-gradient(180deg, #e5f4ff 0, #e5f4ff var(--iv-hero-solid, 60%), #fff 100%)',
 }
 
-const glanceGlow = 'radial-gradient(60% 55% at 50% 50%, rgba(0, 153, 255, 0.1) 0%, rgba(90, 228, 167, 0.07) 45%, rgba(255, 255, 255, 0) 100%), #fafdff'
+// Design Approach accent panels: one light progression in the product's azure, from near-white
+// to its #e5f4ff canvas (the hero color)
+const approachAccents = {
+  communication: 'rgba(0, 153, 255, 0.05)',
+  workspace: 'linear-gradient(90deg, rgba(0, 153, 255, 0.04) 0%, rgba(0, 153, 255, 0.09) 100%)',
+  content: '#e5f4ff',
+}
 
 // Side navigation — ids must match the anchors below
 const sections: CaseStudySection[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'context', label: 'Context' },
   { id: 'problem', label: 'Problem' },
-  { id: 'result', label: 'Result' },
+  { id: 'approach', label: 'Design Approach' },
   { id: 'research', label: 'Research' },
   { id: 'strategy', label: 'Strategy' },
   { id: 'testing', label: 'Testing' },
@@ -82,6 +89,48 @@ function HeroArtwork() {
       />
     </div>
   )
+}
+
+// ── Design Approach ───────────────────────────────────────────────────────────
+
+// One stroke family for the three moments (24px grid, 1.5px stroke, round caps)
+const iconProps = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' } as const
+const IconConversations = () => (
+  <svg {...iconProps}>
+    <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h9A1.5 1.5 0 0 1 16 5.5v6a1.5 1.5 0 0 1-1.5 1.5H9l-3.5 3v-3H5.5A1.5 1.5 0 0 1 4 11.5z" />
+    <path d="M19 9h.5A1.5 1.5 0 0 1 21 10.5v6a1.5 1.5 0 0 1-1.5 1.5h-.5v3l-3.5-3H11a1.5 1.5 0 0 1-1.5-1.5V16" />
+  </svg>
+)
+const IconWorkspace = () => (
+  <svg {...iconProps}>
+    <circle cx="9" cy="8" r="3" />
+    <path d="M3.5 19c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5" />
+    <circle cx="17" cy="9" r="2.25" />
+    <path d="M16 13.6c.33-.07.66-.1 1-.1 2.5 0 4 2 4 4.5" />
+  </svg>
+)
+const IconContent = () => (
+  <svg {...iconProps}>
+    <path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2h8A1.5 1.5 0 0 1 20.5 9v9a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 18z" />
+    <circle cx="9.5" cy="12" r="1.25" />
+    <path d="m6.5 17.5 3.5-3 2.5 2 2-1.5 3 2.5" />
+  </svg>
+)
+
+type ApproachScreen = { src: string; alt: string }
+
+/** A screen, opening in the lightbox (exports carry their own frame and shadow) */
+function ApproachScreenImage({ src, alt, className }: ApproachScreen & { className?: string }) {
+  return (
+    <Inspectable src={src} alt={alt} width={1110} block className={className} style={{ borderRadius: 14 }}>
+      <img src={src} alt={alt} width={740} height={508} loading="lazy" />
+    </Inspectable>
+  )
+}
+
+/** One product screen as the moment's visual (Figma 147:41954, 147:42789, 147:43797) */
+function ApproachVisual(screen: ApproachScreen) {
+  return <div className="iv-approach-single"><ApproachScreenImage {...screen} /></div>
 }
 
 // ── Overview ──────────────────────────────────────────────────────────────────
@@ -268,18 +317,35 @@ export default function IVentasCase() {
         </Reveal>
       </Section>
 
-      {/* ── The redesign at a glance ── */}
-      <Section id="result" title="The redesign at a glance" titleAlign="center" background={glanceGlow} className="iv-glance">
-        <BleedShowcase
-          detailWidth={1110}
-          radius={14}
-          center={{ ...screens.messages, width: 640, height: 439.46 }}
-          sides={[
-            { ...screens.contacts, width: 560, height: 384.43 },
-            { ...screens.multimedia, width: 560, height: 384.43 },
-          ]}
+      {/* ── Design Approach: what the restructured product does (content: Figma 143:39218) ── */}
+      <ApproachSection
+        intro="Bringing conversations, contacts and shared sales content into one clear workspace."
+        background="#fff"
+        className="iv-approach"
+      >
+        <ApproachMoment
+          icon={<IconConversations />}
+          title="Centralize communication"
+          body="Conversations from different channels come together in one message panel, with prospect information available alongside the conversation."
+          accent={approachAccents.communication}
+          visual={<ApproachVisual {...screens.messages} />}
         />
-      </Section>
+        <ApproachMoment
+          side="start"
+          icon={<IconWorkspace />}
+          title="Organize the sales workspace"
+          body="Contacts can be viewed, filtered and organized in one place, keeping prospect information accessible in the same workspace."
+          accent={approachAccents.workspace}
+          visual={<ApproachVisual {...screens.contacts} />}
+        />
+        <ApproachMoment
+          icon={<IconContent />}
+          title="Keep sales content within reach"
+          body="Shared images and documents stay organized in one place, ready to use when communicating with prospects."
+          accent={approachAccents.content}
+          visual={<ApproachVisual {...screens.multimedia} />}
+        />
+      </ApproachSection>
 
       {/* ── Research ── */}
       <Section id="research" background="#fff" gap={48}>
