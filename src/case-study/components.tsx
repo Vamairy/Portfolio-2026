@@ -176,8 +176,13 @@ export function StatCard({ label, children, style }: { label: string; children: 
   )
 }
 
-/** Audience / pain-point card: title, description and (optionally) a rule + supporting stat. */
-export function InsightCard({ title, body, stat }: { title: string; body: React.ReactNode; stat?: { value: string; label: string } }) {
+/** Audience / pain-point card: title, description and (optionally) a rule + supporting stat, or a quiet note (e.g. a source line). */
+export function InsightCard({ title, body, stat, note }: {
+  title: string
+  body: React.ReactNode
+  stat?: { value: string; label: string }
+  note?: React.ReactNode
+}) {
   return (
     <div className={cx('cs-card cs-insight', !stat && 'cs-insight-compact')}>
       <h3 className="cs-subtitle">{title}</h3>
@@ -186,6 +191,7 @@ export function InsightCard({ title, body, stat }: { title: string; body: React.
         <div className="cs-insight-rule" role="presentation" />
         <Stat value={stat.value} label={stat.label} />
       </>}
+      {note && <p className="cs-insight-note">{note}</p>}
     </div>
   )
 }
@@ -235,11 +241,19 @@ export function MetricCard({ value, label, detail }: { value: string; label: str
   )
 }
 
-/** Participant quote, optionally with a quiet attribution line. The mark opens the quote. */
-export function QuoteCard({ quote, attribution }: { quote: string; attribution?: string }) {
+/**
+ * Participant quote, optionally with a quiet attribution line. The mark opens the quote;
+ * with `mark={false}` the card is text-led and the quote carries its own quotation marks.
+ */
+export function QuoteCard({ quote, attribution, mark = true, className }: {
+  quote: string
+  attribution?: string
+  mark?: boolean
+  className?: string
+}) {
   return (
-    <figure className="cs-card cs-card-outline cs-quote">
-      <GradientText as="span" angle={140} className="cs-quote-mark">“</GradientText>
+    <figure className={cx('cs-card cs-card-outline cs-quote', className)}>
+      {mark && <GradientText as="span" angle={140} className="cs-quote-mark">“</GradientText>}
       <blockquote className="cs-quote-text">{quote}</blockquote>
       {attribution && <figcaption className="cs-body-muted">{attribution}</figcaption>}
     </figure>
@@ -263,13 +277,44 @@ export function HighlightPanel({ title, body, stat }: {
   )
 }
 
-/** Dark closing card with a statement and (optionally) a device image anchored below it. */
-export function TakeawayCard({ label, children, image, className }: {
-  label: string
+/**
+ * Dark closing card with a statement and (optionally) a device image anchored below it.
+ * `layout="wide"` spans the content column: statement and `items` on the left, `media`
+ * (composed product imagery) anchored to the card's bottom-right edge.
+ */
+export function TakeawayCard({ label, children, image, className, layout, items, media }: {
+  /** Required for the standard card; optional in the wide layout, which can open directly on the statement */
+  label?: string
   children: React.ReactNode
   image?: { src: string; alt: string }
   className?: string
+  layout?: 'wide'
+  /** Short titled outcomes listed under the statement (wide layout) */
+  items?: { title: string; body: string }[]
+  /** Composed imagery beside the statement (wide layout) */
+  media?: React.ReactNode
 }) {
+  if (layout === 'wide') {
+    return (
+      <div className={cx('cs-takeaway cs-takeaway-wide', className)}>
+        <div className="cs-takeaway-body">
+          {label && <p className="cs-takeaway-label">{label}</p>}
+          <p className="cs-takeaway-text">{children}</p>
+          {items && (
+            <ul className="cs-takeaway-items">
+              {items.map(item => (
+                <li key={item.title}>
+                  <h3 className="cs-takeaway-item-title">{item.title}</h3>
+                  <p className="cs-takeaway-item-body">{item.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        {media && <div className="cs-takeaway-aside">{media}</div>}
+      </div>
+    )
+  }
   return (
     <div className={cx('cs-takeaway', className)}>
       <p className="cs-takeaway-label">{label}</p>
@@ -566,5 +611,62 @@ export function InterludeBand({ background, ink, image, children }: {
         </div>
       </div>
     </section>
+  )
+}
+
+// ── Approach ──────────────────────────────────────────────────────────────────
+
+/**
+ * "Design Approach" section: WHAT the resulting design does, told as a short sequence of
+ * experience moments (<ApproachMoment>). Research and Strategy later explain WHY.
+ * The heading and intro are shared; each project art-directs the moments' visuals.
+ */
+export function ApproachSection({ id = 'approach', title = 'Design Approach', intro, background, className, children }: {
+  id?: string
+  title?: string
+  /** One project-specific statement introducing the moments */
+  intro: React.ReactNode
+  background?: string
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <Section id={id} title={title} titleAlign="center" background={background} gap={16} className={cx('cs-approach', className)}>
+      <p className="cs-approach-intro">{intro}</p>
+      <div className="cs-approach-moments">{children}</div>
+    </Section>
+  )
+}
+
+/**
+ * One experience moment: an optional icon, a title and a short description beside a
+ * project-provided visual (any composition of real product imagery). `side` places the
+ * visual; alternate it between moments. `accent` (any CSS background) draws a soft panel
+ * behind the visual that runs out to the viewport edge on the visual's side. On smaller
+ * screens the moment stacks: copy first, then the visual.
+ */
+export function ApproachMoment({ icon, title, body, visual, side = 'end', accent, className }: {
+  icon?: React.ReactNode
+  title: string
+  body: React.ReactNode
+  visual: React.ReactNode
+  side?: 'start' | 'end'
+  accent?: string
+  className?: string
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  // Copy first, then the visual, in reading order on every layout
+  useReveal(ref, { selector: '.cs-approach-copy, .cs-approach-visual', stagger: 140 })
+  return (
+    <div ref={ref} className={cx('cs-approach-moment', side === 'start' && 'cs-approach-moment-start', className)}>
+      <div className="cs-approach-copy">
+        {icon && <span className="cs-approach-icon" aria-hidden>{icon}</span>}
+        <h3 className="cs-subtitle">{title}</h3>
+        <p className="cs-body-muted">{body}</p>
+      </div>
+      <div className={cx('cs-approach-visual', accent && 'cs-approach-accented')} style={accent ? { '--cs-approach-accent': accent } as React.CSSProperties : undefined}>
+        {visual}
+      </div>
+    </div>
   )
 }

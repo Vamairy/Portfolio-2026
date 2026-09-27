@@ -143,6 +143,7 @@ html.cs-root {
 /* Without a supporting stat the card simply hugs its text (row height still equalizes) */
 .cs-insight-compact { min-height: 0; }
 .cs-insight-rule { height: 1px; background: var(--cs-line); }
+.cs-insight-note { font-size: 13px; line-height: 20px; color: var(--cs-text-secondary); }
 
 .cs-number { font-size: 24px; font-weight: 700; letter-spacing: -0.6px; line-height: normal; }
 
@@ -306,6 +307,21 @@ html.cs-root {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%);
   mask-image: linear-gradient(to bottom, transparent 0, #000 12%);
 }
+/* Wide takeaway: statement + outcomes beside composed imagery that sits on the bottom edge */
+.cs-takeaway-wide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  column-gap: 40px;
+  padding: 56px 56px 0;
+}
+.cs-takeaway-body { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 24px; padding-bottom: 56px; }
+.cs-takeaway-wide .cs-takeaway-text { max-width: 500px; font-size: 24px; line-height: 1.4; }
+.cs-takeaway-items { list-style: none; display: flex; flex-direction: column; margin-top: 8px; }
+.cs-takeaway-items li { display: flex; flex-direction: column; gap: 4px; padding: 20px 0; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+.cs-takeaway-items li:last-child { padding-bottom: 0; }
+.cs-takeaway-item-title { font-size: 18px; line-height: 26px; font-weight: 600; color: #f2f2f4; }
+.cs-takeaway-item-body { font-size: 15px; line-height: 24px; color: rgba(229, 229, 229, 0.72); max-width: 460px; }
+.cs-takeaway-aside { position: relative; min-height: 360px; }
 
 /* ── Bleed showcase ──
    The row spans the viewport (breaks out of the column) and stays centered on the
@@ -349,6 +365,41 @@ html.cs-root {
 }
 .cs-interlude-media { align-self: end; }
 .cs-interlude-media img { display: block; width: 100%; height: auto; }
+
+/* ── Approach ──
+   WHAT the design does, as a sequence of moments: copy (icon, title, description)
+   beside a project-provided visual, alternating sides. Geometry from the Figma
+   Approach frame: 274px copy · 160px gap · 496px visual, 40px above and below each
+   moment. The optional accent panel sits 20px inside the visual's height, starts
+   74px before it and runs out to the viewport edge (clipped by .cs-page). */
+.cs-approach { padding-bottom: 60px; }
+.cs-approach-intro { font-size: 24px; line-height: 1.3; color: var(--cs-text-primary); text-align: center; }
+.cs-approach-moments { display: flex; flex-direction: column; margin-top: 24px; }
+.cs-approach-moment {
+  display: grid;
+  grid-template-columns: minmax(0, 274fr) minmax(0, 496fr);
+  column-gap: 160px;
+  align-items: center;
+  padding: 40px 0;
+}
+.cs-approach-moment-start { grid-template-columns: minmax(0, 496fr) minmax(0, 274fr); }
+.cs-approach-moment-start .cs-approach-copy { order: 1; }
+.cs-approach-copy { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.cs-approach-icon { display: flex; width: 40px; height: 40px; color: var(--cs-text-primary); }
+.cs-approach-icon svg { width: 100%; height: 100%; }
+.cs-approach-visual { position: relative; isolation: isolate; min-width: 0; }
+.cs-approach-accented::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 20px;
+  bottom: 20px;
+  left: -74px;
+  width: 100vw;
+  border-radius: 32px 0 0 32px;
+  background: var(--cs-approach-accent);
+}
+.cs-approach-moment-start .cs-approach-accented::before { left: auto; right: -74px; border-radius: 0 32px 32px 0; }
 
 /* ── Chrome: back link, back-to-top, footer ── */
 /* Pill link in the portfolio's outline-button language (HoverFillLink, dark variant) */
@@ -562,6 +613,12 @@ html.cs-root {
     margin-right: 0;
   }
   .cs-page[data-sidenav] .cs-float-back { display: none; }
+  /* A start-side Approach panel fades out before the navigation column, like BleedShowcase.
+     In the panel's own box the content edge sits at 100vw − 74px − the visual column (≈503px at 940). */
+  .cs-page[data-sidenav] .cs-approach-moment-start .cs-approach-accented::before {
+    -webkit-mask-image: linear-gradient(90deg, transparent calc(100vw - 665px), #000 calc(100vw - 593px));
+    mask-image: linear-gradient(90deg, transparent calc(100vw - 665px), #000 calc(100vw - 593px));
+  }
   /* Bleed compositions fade out before the navigation column */
   .cs-page[data-sidenav] .cs-bleed {
     --nav-edge: calc(50% - var(--cs-content) / 2 + var(--cs-shift));
@@ -610,6 +667,13 @@ html.cs-root {
 }
 
 @media (max-width: 860px) {
+  .cs-approach-moment, .cs-approach-moment-start { grid-template-columns: 1fr; row-gap: 40px; }
+  .cs-approach-moment-start .cs-approach-copy { order: 0; }
+  .cs-approach-copy { max-width: 420px; justify-self: center; }
+  .cs-approach-visual { width: min(100%, 496px); justify-self: center; }
+  /* Accent becomes a full-bleed band behind the visual */
+  .cs-approach-accented::before,
+  .cs-approach-moment-start .cs-approach-accented::before { left: calc(50% - 50vw); right: auto; width: 100vw; border-radius: 0; }
   .cs-grid-3 { grid-template-columns: 1fr; }
   .cs-insight { min-height: 0; }
   .cs-insight-body { flex: 0 0 auto; }
@@ -621,6 +685,10 @@ html.cs-root {
   .cs-hero-eyebrow { font-size: 20px; margin-top: 8px; }
   .cs-hero-title { font-size: 32px; line-height: 40px; }
   .cs-section { padding-top: 72px; padding-bottom: 72px; }
+  .cs-approach { padding-bottom: 32px; }
+  .cs-approach-intro { font-size: 18px; line-height: 28px; }
+  .cs-approach-moment { padding: 40px 0; row-gap: 32px; }
+  .cs-approach-icon { width: 32px; height: 32px; }
   /* Hierarchy: hero 32 → section 26 → subsection 20 → body 16 */
   .cs-title { font-size: 26px; line-height: 32px; letter-spacing: -0.6px; }
   .cs-subtitle, .cs-ba-label { font-size: 20px; line-height: 28px; }
@@ -640,6 +708,10 @@ html.cs-root {
   .cs-quote-text { font-size: 18px; line-height: 28px; }
   .cs-takeaway { padding: 32px 24px 0; }
   .cs-takeaway:not(:has(.cs-takeaway-media)) { padding-bottom: 32px; }
+  .cs-takeaway.cs-takeaway-wide { grid-template-columns: 1fr; padding: 32px 24px 0; }
+  .cs-takeaway-wide .cs-takeaway-body { padding-bottom: 32px; }
+  .cs-takeaway-wide .cs-takeaway-text { font-size: 19px; }
+  .cs-takeaway-aside { min-height: 280px; }
   .cs-feature { flex-basis: min(280px, 78vw); padding: 32px 24px; gap: 32px; }
   .cs-feature .cs-body { font-size: 15px; line-height: 24px; }
   .cs-feature-title { min-height: 56px; }
