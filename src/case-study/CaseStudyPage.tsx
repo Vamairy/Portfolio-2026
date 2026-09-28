@@ -75,7 +75,7 @@ export default function CaseStudyPage({ theme, sections, children }: {
         {sections?.length ? <CaseStudySideNav sections={sections} /> : null}
         {children}
       </main>
-      <footer className="cs-footer">© 2026. Vaneleiry Cruz</footer>
+      <footer className="cs-footer"><p className="footer-signature">Designed by me with Figma, Claude & questionable sleeping hours. © 2026</p></footer>
       <FloatingBackToWork />
       <BackToTop />
     </div>

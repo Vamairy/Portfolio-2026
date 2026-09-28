@@ -13,6 +13,18 @@ body {
   overflow-x: hidden;
 }
 
+/* ── Footer signature ───────────────────────────────
+   Shared by the Home and case-study footers so they can't drift apart. */
+.footer-signature {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: rgba(242, 242, 244, 0.5);
+  margin: 0;
+}
+
 /* ── Grain overlay ──────────────────────────────────── */
 .grain {
   position: absolute;
@@ -145,38 +157,6 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-/* ── Resume page grids ──────────────────────────────── */
-.resume-exp-row {
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 0 52px;
-}
-.resume-caps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0 52px;
-}
-.resume-edu-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 80px;
-}
-
-@media (max-width: 760px) {
-  .resume-exp-row {
-    grid-template-columns: 1fr;
-    gap: 6px 0;
-  }
-  .resume-caps-grid {
-    grid-template-columns: 1fr;
-    gap: 40px 0;
-  }
-  .resume-edu-grid {
-    grid-template-columns: 1fr;
-    gap: 40px 0;
-  }
 }
 
 /* ── Scrollbar ──────────────────────────────────────── */

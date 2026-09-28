@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './AppV2'
-import Resume from './Resume'
 import IzziCase from './IzziCase'
 import GluoCase from './GluoCase'
 import BebbiaCase from './BebbiaCase'
@@ -18,7 +17,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <ScrollManager />
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/resume" element={<Resume />} />
         <Route path="/work/izzi" element={<IzziCase />} />
         <Route path="/work/gluo" element={<GluoCase />} />
         <Route path="/work/bebbia" element={<BebbiaCase />} />
