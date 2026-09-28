@@ -30,11 +30,31 @@
 .sl-legacy-pair figcaption { text-align: center; }
 .cs-page .sl-legacy { max-width: 100%; height: auto; }
 
-/* ── Result: final screens float on the glow ── */
-.sl-glance .cs-device img { filter: drop-shadow(0 5px 10px rgba(87, 119, 156, 0.12)); object-fit: contain; }
-/* Captions follow the Sellers Figma (16/26, 24px below the screen) rather than the shared 14px default */
-.sl-glance .cs-device-figure { gap: 24px; }
-.sl-glance .cs-device-caption { font-size: 16px; line-height: 26px; }
+/* ── Design Approach: pairs of screens (Figma 129:29972) ──
+   Screens 56px apart with one raised 50px, as in Figma; all values are proportional to the
+   pair width (percent margins resolve against it). The device frame matches the Figma
+   screens: 15px corners, a 10px white bezel outside the screen and a soft shadow. The
+   exports are the clean inner screens, so nothing sits behind the frame. */
+.sl-approach-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 11.11%;             /* 56 / 504 */
+  align-items: start;
+  width: calc(var(--sl-pair-w, 1) * 100%);
+  margin: 0 auto;
+  padding: 10px 0 calc(9.92% + 10px); /* bezel + the 50px drop of the lower screen */
+}
+.sl-approach-pair[data-raised='0'] > :nth-child(2),
+.sl-approach-pair[data-raised='1'] > :nth-child(1) { margin-top: 22.32%; } /* 50 / 224 */
+.sl-approach-phone {
+  border-radius: 15px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 0 10px #fff, 0 5px 10px 11.25px rgba(87, 119, 156, 0.1);
+}
+.sl-approach-phone img { display: block; width: 100%; height: 100%; }
+/* The Figma intro runs 5px wider than the 940px column; balance the break instead of orphaning a word */
+.sl-approach .cs-approach-intro { text-wrap: balance; }
 
 /* ── Research: two ring stats beside the findings ── */
 .sl-rings { display: flex; gap: 20px; align-items: flex-start; align-self: start; }
@@ -75,7 +95,22 @@
   .sl-overview-media { width: 100%; margin-top: 16px; }
   .sl-legacy-pair { gap: 16px; }
   .sl-rings { gap: 16px; }
-  .sl-glance .cs-device-figure { gap: 16px; }
+  /* Approach pairs → a contained swipe so each screen stays large enough to read */
+  .sl-approach-pair {
+    display: flex;
+    gap: 28px;
+    width: auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin: 0 calc(var(--cs-gutter) * -1);
+    padding: 12px var(--cs-gutter) 28px;
+    scroll-padding: 0 var(--cs-gutter);
+  }
+  .sl-approach-pair::-webkit-scrollbar { display: none; }
+  .sl-approach-pair > * { flex: 0 0 calc(210px * var(--sl-pair-w, 1)); scroll-snap-align: start; } /* narrower screens stay narrower */
+  .sl-approach-pair[data-raised='0'] > :nth-child(2),
+  .sl-approach-pair[data-raised='1'] > :nth-child(1) { margin-top: 44px; }
 
   /* The showcase keeps its composition inside a contained horizontal scroll */
   .sl-showcase-scroll {
