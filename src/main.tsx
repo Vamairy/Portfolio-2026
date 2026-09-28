@@ -7,6 +7,7 @@ import IzziCase from './IzziCase'
 import GluoCase from './GluoCase'
 import BebbiaCase from './BebbiaCase'
 import IzziSellersCase from './IzziSellersCase'
+import IVentasCase from './IVentasCase'
 import MiFidelidadCase from './MiFidelidadCase'
 import ScrollManager from './components/ScrollManager'
 import './index.css'
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/work/gluo" element={<GluoCase />} />
         <Route path="/work/bebbia" element={<BebbiaCase />} />
         <Route path="/work/izzi-sellers" element={<IzziSellersCase />} />
+        <Route path="/work/iventas" element={<IVentasCase />} />
         <Route path="/work/mi-fidelidad" element={<MiFidelidadCase />} />
       </Routes>
     </BrowserRouter>

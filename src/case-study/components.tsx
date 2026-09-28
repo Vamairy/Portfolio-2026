@@ -241,18 +241,35 @@ export function MetricCard({ value, label, detail }: { value: string; label: str
   )
 }
 
-/** Participant quote, optionally with a quiet attribution line. The mark opens the quote. */
-export function QuoteCard({ quote, attribution, className }: {
+/**
+ * Participant quote, optionally with a quiet attribution line. The mark opens the quote.
+ * `variant="finding"` presents a research finding instead of speech: no quotation mark,
+ * `title` at the quote's scale and `quote` as supporting body copy.
+ */
+export function QuoteCard({ quote, attribution, className, variant = 'quote', title }: {
   quote: string
   attribution?: string
   className?: string
+  variant?: 'quote' | 'finding'
+  /** Finding headline (finding variant) */
+  title?: string
 }) {
+  if (variant === 'finding') return <FindingCard title={title ?? ''} body={quote} className={className} />
   return (
     <figure className={cx('cs-card cs-card-outline cs-quote', className)}>
       <GradientText as="span" angle={140} className="cs-quote-mark">“</GradientText>
       <blockquote className="cs-quote-text">{quote}</blockquote>
       {attribution && <figcaption className="cs-body-muted">{attribution}</figcaption>}
     </figure>
+  )
+}
+
+function FindingCard({ title, body, className }: { title: string; body: string; className?: string }) {
+  return (
+    <article className={cx('cs-card cs-card-outline cs-quote cs-finding', className)}>
+      <h3 className="cs-quote-text cs-finding-title">{title}</h3>
+      <p className="cs-body">{body}</p>
+    </article>
   )
 }
 
@@ -279,7 +296,7 @@ export function HighlightPanel({ title, body, stat }: {
  * (composed product imagery) anchored to the card's bottom-right edge.
  */
 export function TakeawayCard({ label, children, image, className, layout, items, media }: {
-  /** Required for the standard card; optional in the wide layout, which can open directly on the statement */
+  /** Optional heading line; omit it when the section title already names the card */
   label?: string
   children: React.ReactNode
   image?: { src: string; alt: string }
@@ -313,7 +330,7 @@ export function TakeawayCard({ label, children, image, className, layout, items,
   }
   return (
     <div className={cx('cs-takeaway', className)}>
-      <p className="cs-takeaway-label">{label}</p>
+      {label && <p className="cs-takeaway-label">{label}</p>}
       <p className="cs-takeaway-text">{children}</p>
       {image && (
         <div className="cs-takeaway-media">
@@ -481,10 +498,14 @@ export function FeatureColumns({ items, imageWidth, imageHeight, detailWidth }: 
 
 type BeforeAfterSide = { media: React.ReactNode; text: React.ReactNode }
 
-/** Titled Before → After comparison. Stacks vertically on mobile. */
+/**
+ * Titled Before → After comparison. Stacks vertically on mobile. When the "Before" state has
+ * no visual evidence, omit `before.media`: the Before card becomes a narrower text-only card
+ * and the After media gets the room.
+ */
 export function BeforeAfter({ title, before, after, arrow, textGap = 8 }: {
   title: string
-  before: BeforeAfterSide
+  before: { media?: React.ReactNode; text: React.ReactNode }
   after: BeforeAfterSide
   arrow: string
   textGap?: number
@@ -495,9 +516,9 @@ export function BeforeAfter({ title, before, after, arrow, textGap = 8 }: {
   return (
     <div className="cs-stack" style={{ gap: 16 }}>
       <h3 className="cs-subtitle">{title}</h3>
-      <div ref={ref} className="cs-ba">
+      <div ref={ref} className={cx('cs-ba', !before.media && 'cs-ba-textonly')}>
         <div className="cs-ba-card cs-ba-before">
-          <div className="cs-ba-media">{before.media}</div>
+          {before.media && <div className="cs-ba-media">{before.media}</div>}
           <div className="cs-ba-text" style={{ gap: textGap }}>
             <p className="cs-ba-label">Before</p>
             <p className="cs-body">{before.text}</p>
@@ -516,6 +537,41 @@ export function BeforeAfter({ title, before, after, arrow, textGap = 8 }: {
       </div>
     </div>
   )
+}
+
+/**
+ * A product screen with numbered markers placed on it (positions as % of the image).
+ * `tone` separates what worked (accent) from what needed iteration (neutral); pair it
+ * with a numbered list of the same markers so the notes stay readable on any screen size.
+ */
+export function AnnotatedScreen({ src, alt, width, height, markers, detailWidth, radius = 12, className }: {
+  src: string
+  alt: string
+  /** Natural size of the image (px), for layout before it loads */
+  width: number
+  height: number
+  markers: { n: number; x: string; y: string; tone?: 'accent' | 'neutral' }[]
+  /** When set, the screen opens in the lightbox at this width */
+  detailWidth?: number
+  radius?: number
+  className?: string
+}) {
+  const img = <img src={src} alt={alt} width={width} height={height} loading="lazy" />
+  return (
+    <div className={cx('cs-annotated', className)}>
+      {detailWidth
+        ? <Inspectable src={src} alt={alt} width={detailWidth} block style={{ borderRadius: radius }}>{img}</Inspectable>
+        : img}
+      {markers.map(m => (
+        <span key={m.n} className="cs-marker" data-tone={m.tone ?? 'accent'} style={{ left: m.x, top: m.y }} aria-hidden>{m.n}</span>
+      ))}
+    </div>
+  )
+}
+
+/** Numbered marker used beside an AnnotatedScreen (the list that explains the markers). */
+export function Marker({ n, tone = 'accent' }: { n: number; tone?: 'accent' | 'neutral' }) {
+  return <span className="cs-marker" data-tone={tone} aria-hidden>{n}</span>
 }
 
 type ShowcaseImage = { src: string; alt: string; width: number; height: number }
