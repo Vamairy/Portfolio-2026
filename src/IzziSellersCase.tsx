@@ -1,11 +1,13 @@
+import React from 'react'
 import { Inspectable } from './case-study/lightbox'
 import { Reveal } from './case-study/motion'
 import CaseStudyPage, { type CaseStudySection, type CaseStudyTheme } from './case-study/CaseStudyPage'
 import {
+  ApproachMoment,
+  ApproachSection,
   BeforeAfter,
   BulletList,
   CaseHero,
-  DeviceShowcase,
   Divider,
   FeatureColumns,
   InsightCard,
@@ -38,18 +40,17 @@ const sections: CaseStudySection[] = [
   { id: 'overview', label: 'Overview' },
   { id: 'context', label: 'Context' },
   { id: 'problem', label: 'Problem' },
-  { id: 'result', label: 'Result' },
+  { id: 'approach', label: 'Design Approach' },
   { id: 'research', label: 'Research' },
   { id: 'strategy', label: 'Strategy' },
   { id: 'before-after', label: 'Before → After' },
   { id: 'impact', label: 'Impact' },
 ]
 
-// Peach radial glows exported from Figma (Overview media card, Glance section, "After" cards)
+// Peach radial glows exported from Figma (Overview media card, "After" cards)
 const glow = (w: number, h: number, matrix: string) =>
   `url("data:image/svg+xml;utf8,<svg viewBox='0 0 ${w} ${h}' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><rect x='0' y='0' height='100%' width='100%' fill='url(%23grad)' opacity='1'/><defs><radialGradient id='grad' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(${matrix})'><stop stop-color='rgba(255,239,224,1)' offset='0'/><stop stop-color='rgba(255,255,255,1)' offset='1'/></radialGradient></defs></svg>")`
 const overviewGlow = glow(450.01, 280, '8.1894 14 -45.001 10.191 225 140')
-const glanceGlow = glow(1260, 738, '22.93 36.9 -126 26.861 630.01 369')
 const afterGlow = glow(440.01, 584, '8.0074 29.2 -44.001 21.256 220 292')
 
 /** Legacy screenshot, inspectable (Context + "Before" cards) */
@@ -67,6 +68,67 @@ function AfterScreen({ src, alt, width }: { src: string; alt: string; width: num
     <Inspectable src={src} alt={alt} width={width * 2} style={{ borderRadius: 16 }}>
       <img className="sl-after-screen" src={src} alt={alt} width={width} height={380} loading="lazy" />
     </Inspectable>
+  )
+}
+
+// ── Design Approach (Figma 129:29972) ─────────────────────────────────────────
+
+// Accent panels exactly as in Figma (129:29977 · 129:30283 · 129:30488): a warm progression
+// from the Sellers peach (the same rgb(255, 239, 224) as its glows) to pale pink and near-white.
+const approachAccents = {
+  progress: 'linear-gradient(198.46deg, rgb(255, 248, 242) 13.08%, rgb(255, 239, 225) 87.48%)',
+  commissions: 'linear-gradient(178.32deg, rgb(255, 239, 224) 0%, rgb(254, 243, 255) 96.66%)',
+  action: 'linear-gradient(124.04deg, rgb(254, 243, 255) 0%, rgb(255, 252, 255) 100%)',
+}
+
+// Line icons in the same inline-SVG language as the other Approach sections (24px grid,
+// round caps, 1.15 stroke): sales progress · commission · document/action
+const IconProgress = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3.5 17a8.5 8.5 0 0 1 17 0" />
+    <path d="M12 17l4.2-5.2" />
+    <circle cx="12" cy="17" r="1.3" />
+    <path d="M5.2 11.2l1.4 1M12 8.5v1.6M18.8 11.2l-1.4 1" />
+  </svg>
+)
+const IconCommission = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M9 15l6-6" />
+    <circle cx="9.5" cy="9.5" r="1.2" />
+    <circle cx="14.5" cy="14.5" r="1.2" />
+  </svg>
+)
+const IconAction = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13.5 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h5" />
+    <path d="M13.5 3.5l5 5V12" />
+    <path d="M13.5 3.5v5h5" />
+    <path d="M8.5 12.5h5M8.5 15.5h3" />
+    <path d="M15 18h5M18 15.5l2.5 2.5-2.5 2.5" />
+  </svg>
+)
+
+type ApproachScreen = { src: string; alt: string; width: number }
+
+/**
+ * Two screens as composed in Figma: 56px apart, one raised 50px above the other
+ * (`raised` picks which). Clean inner-screen exports; the white bezel, corners and
+ * shadow are the device frame (CSS). Screen widths keep their Figma proportions.
+ */
+function ApproachPair({ screens: pair, raised = 0 }: { screens: [ApproachScreen, ApproachScreen]; raised?: 0 | 1 }) {
+  // Figma pairs are 503.9px wide for 224px screens; narrower screens make a narrower pair
+  const pairWidth = pair[0].width * 2 + 56
+  return (
+    <div className="sl-approach-pair" data-raised={raised} style={{ '--sl-pair-w': pairWidth / 503.9 } as React.CSSProperties}>
+      {pair.map(s => (
+        <Inspectable key={s.src} src={s.src} alt={s.alt} width={s.width * 2} style={{ borderRadius: 15 }}>
+          <div className="sl-approach-phone" style={{ aspectRatio: `${s.width} / 480` }}>
+            <img src={s.src} alt={s.alt} loading="lazy" />
+          </div>
+        </Inspectable>
+      ))}
+    </div>
   )
 }
 
@@ -140,21 +202,51 @@ export default function IzziSellersCase() {
         </div>
       </Section>
 
-      {/* ── The redesign at a glance ── */}
-      <Section id="result" title="The redesign at a glance" titleAlign="center" background={glanceGlow} className="sl-glance">
-        <DeviceShowcase
-          width={206}
-          height={420}
-          radius={25}
-          detailWidth={412}
-          devices={[
-            { src: `${A}/glance-commissions.png`, caption: 'Commissions', alt: 'Commissions screen: $550.00 generated this period, the current Cinta amarilla tier and a per-sale breakdown' },
-            { src: `${A}/glance-sales.png`, caption: 'Query of sales', alt: 'Sales screen: a monthly progress gauge at 14 sales with tabs for open, completed and cancelled orders' },
-            { src: `${A}/glance-rate-experience.png`, caption: 'Rate your experience', alt: 'Feedback prompt asking what went wrong, with selectable issues and a Continue button' },
-            { src: `${A}/glance-resources.png`, caption: 'Sales Resources', alt: 'Materials and resources screen with training and commission information grouped by tier' },
-          ]}
+      {/* ── Design Approach: what the redesigned app does (Figma 129:29972) ── */}
+      <ApproachSection
+        title="Design Approach"
+        intro="Making progress visible, commissions clearer, and sales information easier to act on."
+        background="#fbfafa"
+        className="sl-approach"
+      >
+        <ApproachMoment
+          icon={<IconProgress />}
+          title="Turn sales progress into motivation"
+          body="See monthly sales on a progress gauge, alongside the current commission tier and a monthly ranking of top sellers."
+          accent={approachAccents.progress}
+          visual={
+            <ApproachPair screens={[
+              { src: `${A}/approach-sales-progress.png`, width: 224, alt: 'Mis ventas: a monthly sales gauge at 14 sales with the Cinta amarilla tier, tabs for orders in progress, completed and cancelled, and the open sales list' },
+              { src: `${A}/approach-leaderboard.png`, width: 224, alt: 'Monthly results: a first-place badge for Fernando González and a leaderboard of the month’s top sellers by sales' },
+            ]} />
+          }
         />
-      </Section>
+        <ApproachMoment
+          side="start"
+          icon={<IconCommission />}
+          title="Make commissions easier to understand"
+          body="See the commissions earned in a period, sale by sale, plus what each tier pays and how many sales it takes to reach it."
+          accent={approachAccents.commissions}
+          visual={
+            <ApproachPair screens={[
+              { src: `${A}/approach-commissions.png`, width: 224, alt: 'Mis comisiones: $550.00 in commissions for the period, the Cinta amarilla tier and a table of each sale’s points and commission' },
+              { src: `${A}/approach-commission-tiers.png`, width: 224, alt: 'Commission tiers sheet: Cinta Amarilla up to +5% at 10 sales, Cinta Naranja up to +10% at 30, Cinta Rosa up to +20% at 60' },
+            ]} />
+          }
+        />
+        <ApproachMoment
+          icon={<IconAction />}
+          title="Use sales information to take action"
+          body="Open a sale’s order, package and customer details, and create a business case for it with comments and supporting documents."
+          accent={approachAccents.action}
+          visual={
+            <ApproachPair raised={1} screens={[
+              { src: `${A}/approach-sale-details.png`, width: 218, alt: 'Detalle de venta: order data with account, order number, type and status, plus collapsible package and customer sections' },
+              { src: `${A}/approach-business-case.png`, width: 218, alt: 'Caso de negocio: a required comment about the order, optional document uploads by photo or from the phone, and a Create business case button' },
+            ]} />
+          }
+        />
+      </ApproachSection>
 
       {/* ── Research → Strategy ── */}
       <Section id="research" background="#fff" gap={80}>
